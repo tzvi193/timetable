@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timetable</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Timetable</h1>
+            <h2>10 Chesed - Timetable Report</h2>
+        </div>
+
+        <div class="week-selector">
+            <button class="week-btn active" onclick="showWeek('week1')">Week 1</button>
+            <button class="week-btn" onclick="showWeek('week2')">Week 2</button>
+        </div>
+
+        <div class="timetable-container">
+            <div id="week1" class="week-content">
+                <table class="timetable">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Monday</th>
+                            <th>Tuesday</th>
+                            <th>Wednesday</th>
+                            <th>Thursday</th>
+                            <th>Friday</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="period-time">Registration</td>
+                            <td class="registration">Registration<br><span class="room">10BCheReg</span><br><span
+                                    class="teacher">Miss M Nava</span></td>
+                            <td class="registration">Registration<br><span class="room">10BCheReg</span><br><span
+                                    class="teacher">Miss M Nava</span></td>
+                            <td class="registration">Registration<br><span class="room">10BCheReg</span><br><span
+                                    class="teacher">Miss M Nava</span></td>
+                            <td class="registration">Registration<br><span class="room">10BCheReg</span><br><span
+                                    class="teacher">Miss M Nava</span></td>
+                            <td class="registration">Registration<br><span class="room">10BCheReg</span><br><span
+                                    class="teacher">Miss M Nava</span></td>
+                        </tr>
+                        <tr>
+                            <td class="period-time">Period 1</td>
+                            <td>
+                                <div class="subject">Science</div>
+                                <div class="room">10BS3CHM</div>
+                                <div class="teacher">Mrs E Lipman</div>
+                            </td>
+                            <td>
+                                <div class="subject">Mathematics</div>
+                                <div class="room">10BC3XMAT</div>
+                                <div class="teacher">Mr D Kommas</div>
+                            </td>
+                            <td>
+                                <div class="subject">Mathematics</div>
+                                <div class="room">10BC3XMAT</div>
+                                <div class="teacher">Mr D Kommas</div>
+                            </td>
+                            <td>
+                                <div class="subject">Modern Hebrew</div>
+                                <div class="room">10B1MHB</div>
+                                <div class="teacher">Mr M Nicholls</div>
+                            </td>
+                            <td>
+                                <div class="subject">Mathematics</div>
+                                <div class="room">10BC3XMAT</div>
+                                <div class="teacher">Mr D Kommas</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="period-time">Period 2</td>
+                            <td>
+                                <div class="subject">English</div>
+                                <div class="room">10BC3XENG</div>
+                                <div class="teacher">Ms A Greenwood</div>
+                            </td>
+                            <td>
+                                <div class="subject">Mathematics</div>
+                                <div class="room">10BC3XMAT</div>
+                                <div class="teacher">Mr D Kommas</div>
+                            </td>
+                            <td>
+                                <div class="subject">Mathematics</div>
+                                <div class="room">10BC3XMAT</div>
+                                <div class="teacher">Mr D Kommas</div>
+                            </td>
+                            <td>
+                                <div class="subject">Computing</div>
+                                <div class="room">10B2DCMP</div>
+                                <div class="teacher">Mr O Hopplar</div>
+                            </td>
+                            <td>
+                                <div class="subject">English</div>
+                                <div class="room">10BC3XENG</div>
+                                <div class="teacher">Ms A Greenwood</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="period-time">Period 3</td>
+                            <td>
+                                <div class="subject">English</div>
+                                <div class="room">10BC3XENG</div>
+                                <div class="teacher">Ms A Greenwood</div>
+                            </td>
+                            <td>
+                                <div class="subject">Science</div>
+                                <div class="room">10BS3BIO</div>
+                                <div class="teacher">Mr S Naeem</div>
+                            </td>
+                            <td>
+                                <div class="subject">Modern Hebrew</div>
+                                <div class="room">10B1MHB</div>
+                                <div class="teacher">Mr M Nicholls</div>
+                            </td>
+                            <td>
+                                <div class="subject">Computing</div>
+                                <div class="room">10B2DCMP</div>
+                                <div class="teacher">Mr O Hopplar</div>
+                            </td>
+                            <td>
+                                <div class="subject">Geography</div>
+                                <div class="room">10B3GEO</div>
+                                <div class="teacher">Mr C Gray</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="period-time">Period 4</td>
+                            <td>
+                                <div class="subject">Science</div>
+                                <div class="room">10BS3BIO</div>
+                                <div class="teacher">Mr S Naeem</div>
+                            </td>
+                            <td>
+                                <div class="subject">P.E.</div>
+                                <div class="room">10BS3PED</div>
+                                <div class="teacher">Mr M Sharpe</div>
+                            </td>
+                            <td>
+                                <div class="subject">Gemoro</div>
+                                <div class="room">10B1JGEM</div>
+                                <div class="teacher">Rabbi G Liss</div>
+                            </td>
+                            <td>
+                                <div class="subject">English</div>
+                                <div class="room">10BC3XENG</div>
+                                <div class="teacher">Ms A Greenwood</div>
+                            </td>
+                            <td>
+                                <div class="subject">Biblical Hebrew</div>
+                                <div class="room">10B1JKLBHB</div>
+                                <div class="teacher">Mr B Rothstein</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="period-time">Period 5a</td>
+                            <td>
+                                <div class="subject">Science</div>
+                                <div class="room">10BS3BIO</div>
+                                <div class="teacher">Mr M Buckley</div>
+                            </td>
+                            <td>
+                                <div class="subject">Biblical Hebrew</div>
+                                <div class="room">10B1JKLBHB</div>
+                                <div class="teacher">Mr B Rothstein</div>
+                            </td>
+                            <td>
+                                <div class="subject">Geography</div>
+                                <div class="room">10B3GEO</div>
+                                <div class="teacher">Mr C Gray</div>
+                            </td>
+                            <td>
+                                <div class="subject">Biblical Hebrew</div>
+                                <div class="room">10B1JKLBHB</div>
+                                <div class="teacher">Mr B Rothstein</div>
+                            </td>
+                            <td>
+                                <div class="subject">Gemoro</div>
+                                <div class="room">10B1JGEM</div>
+                                <div class="teacher">Rabbi G Liss</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="period-time">Break</td>
+                            <td class="break">Break</td>
+                            <td class="break">Break</td>
+                            <td class="break">Break</td>
+                            <td class="break">Break</td>
+                            <td class="break">Break</td>
+                        </tr>
+                        <tr>
+                            <td class="period-time">Mincha</td>
+                            <td>
+                                <div class="subject">Mincha</div>
+                                <div class="room">10BCheM1N</div>
+                                <div class="teacher">Rabbi G Liss</div>
+                            </td>
+                            <td>
+                                <div class="subject">Mincha</div>
+                                <div class="room">10BCheM1N</div>
+                                <div class="teacher">Rabbi G Liss</div>
+                            </td>
+                            <td>
+                                <div class="subject">Mincha</div>
+                                <div class="room">10BCheM1N</div>
+                                <div class="teacher">Rabbi G Liss</div>
+                            </td>
+                            <td>
+                                <div class="subject">Mincha</div>
+                                <div class="room">10BCheM1N</div>
+                                <div class="teacher">Rabbi G Liss</div>
+                            </td>
+                            <td class="empty">-</td>
+                        </tr>
+                        <tr>
+                            <td class="period-time">Period 6</td>
+                            <td>
+                                <div class="subject">Gemoro</div>
+                                <div class="room">10B1JGEM</div>
+                                <div class="teacher">Rabbi G Liss</div>
+                            </td>
+                            <td>
+                                <div class="subject">Science</div>
+                                <div class="room">10BS3CHM</div>
+                                <div class="teacher">Mrs E Lipman</div>
+                            </td>
+                            <td>
+                                <div class="subject">Science</div>
+                                <div class="room">10BS3CHM</div>
+                                <div class="teacher">Mrs E Lipman</div>
+                            </td>
+                            <td>
+                                <div class="subject">Gemoro</div>
+                                <div class="room">10B1JGEM</div>
+                                <div class="teacher">Rabbi G Liss</div>
+                            </td>
+                            <td class="empty">-</td>
+                        </tr>
+                        <tr>
+                            <td class="period-time">Period 7</td>
+                            <td>
+                                <div class="subject">Chumash</div>
+                                <div class="room">10B1JGCHU</div>
+                                <div class="teacher">Mr A Nyman</div>
+                            </td>
+                            <td>
+                                <div class="subject">Gemoro</div>
+                                <div class="room">10B1JGEM</div>
+                                <div class="teacher">Rabbi G Liss</div>
+                            </td>
+                            <td>
+                                <div class="subject">Computing</div>
+                                <div class="room">10B2DCMP</div>
+                                <div class="teacher">Mr O Hopplar</div>
+                            </td>
+                            <td>
+                                <div class="subject">English</div>
+                                <div class="room">10BC3XENG</div>
+                                <div class="teacher">Ms A Greenwood</div>
+                            </td>
+                            <td class="empty">-</td>
+                        </tr>
+                        <tr>
+                            <td class="period-time">Period 8</td>
+                            <td>
+                                <div class="subject">Science</div>
+                                <div class="room">10BS3PHY</div>
+                                <div class="teacher">Mr M Buckley</div>
+                            </td>
+                            <td>
+                                <div class="subject">Chumash</div>
+                                <div class="room">10B1JGCHU</div>
+                                <div class="teacher">Mr A Nyman</div>
+                            </td>
+                            <td>
+                                <div class="subject">Geography</div>
+                                <div class="room">10B3GEO</div>
+                                <div class="teacher">Mr C Gray</div>
+                            </td>
+                            <td>
+                                <div class="subject">Modern Hebrew</div>
+                                <div class="room">10B1MHB</div>
+                                <div class="teacher">Mr M Nicholls</div>
+                            </td>
+                            <td class="empty">-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="week2" class="week-content" style="display: none;">
+                <table class="timetable">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Monday</th>
+                            <th>Tuesday</th>
+                            <th>Wednesday</th>
+                            <th>Thursday</th>
+                            <th>Friday</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="period-time">Registration</td>
+                            <td class="registration">Registration<br><span class="room">10BCheReg</span><br><span
+                                    class="teacher">Miss M Nava</span></td>
+                            <td class="registration">Registration<br><span class="room">10BCheReg</span><br><span
+                                    class="teacher">Miss M Nava</span></td>
+                            <td class="registration">Registration<br><span class="room">10BCheReg</span><br><span
+                                    class="teacher">Miss M Nava</span></td>
+                            <td class="registration">Registration<br><span class="room">10BCheReg</span><br><span
+                                    class="teacher">Miss M Nava</span></td>
+                            <td class="registration">Registration<br><span class="room">10BCheReg</span><br><span
+                                    class="teacher">Miss M Nava</span></td>
+                        </tr>
+                        <tr>
+                            <td class="period-time">Period 1</td>
+                            <td>
+                                <div class="subject">Science</div>
+                                <div class="room">10BS3PHY</div>
+                                <div class="teacher">Mr M Buckley</div>
+                            </td>
+                            <td>
+                                <div class="subject">P.E.</div>
+                                <div class="room">10BS3PED</div>
+                                <div class="teacher">Mr M Sharpe</div>
+                            </td>
+                            <td>
+                                <div class="subject">Mathematics</div>
+                                <div class="room">10BC3XMAT</div>
+                                <div class="teacher">Mr D Kommas</div>
+                            </td>
+                            <td>
+                                <div class="subject">Science</div>
+                                <div class="room">10BS3BIO</div>
+                                <div class="teacher">Mr S Naeem</div>
+                            </td>
+                            <td>
+                                <div class="subject">Science</div>
+                                <div class="room">10BS3BIO</div>
+                                <div class="teacher">Mr S Naeem</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="period-time">Period 2</td>
+                            <td>
+                                <div class="subject">English</div>
+                                <div class="room">10BC3XENG</div>
+                                <div class="teacher">Ms A Greenwood</div>
+                            </td>
+                            <td>
+                                <div class="subject">Geography</div>
+                                <div class="room">10B3GEO</div>
+                                <div class="teacher">Mr C Gray</div>
+                            </td>
+                            <td>
+                                <div class="subject">P.S.H.E.</div>
+                                <div class="room">10BC3XPSH</div>
+                                <div class="teacher">Mrs J Rozenfeld</div>
+                            </td>
+                            <td>
+                                <div class="subject">Modern Hebrew</div>
+                                <div class="room">10B1MHB</div>
+                                <div class="teacher">Mr M Nicholls</div>
+                            </td>
+                            <td>
+                                <div class="subject">Mathematics</div>
+                                <div class="room">10BC3XMAT</div>
+                                <div class="teacher">Mr D Kommas</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="period-time">Period 3</td>
+                            <td>
+                                <div class="subject">English</div>
+                                <div class="room">10BC3XENG</div>
+                                <div class="teacher">Ms A Greenwood</div>
+                            </td>
+                            <td>
+                                <div class="subject">Geography</div>
+                                <div class="room">10B3GEO</div>
+                                <div class="teacher">Mr C Gray</div>
+                            </td>
+                            <td>
+                                <div class="subject">English</div>
+                                <div class="room">10BC3XENG</div>
+                                <div class="teacher">Ms A Greenwood</div>
+                            </td>
+                            <td>
+                                <div class="subject">Modern Hebrew</div>
+                                <div class="room">10B1MHB</div>
+                                <div class="teacher">Mr M Nicholls</div>
+                            </td>
+                            <td>
+                                <div class="subject">Gemoro</div>
+                                <div class="room">10B1JGEM</div>
+                                <div class="teacher">Rabbi G Liss</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="period-time">Period 4</td>
+                            <td>
+                                <div class="subject">Science</div>
+                                <div class="room">10BS3CHM</div>
+                                <div class="teacher">Mrs E Lipman</div>
+                            </td>
+                            <td>
+                                <div class="subject">Biblical Hebrew</div>
+                                <div class="room">10B1JKLBHB</div>
+                                <div class="teacher">Mr B Rothstein</div>
+                            </td>
+                            <td>
+                                <div class="subject">Gemoro</div>
+                                <div class="room">10B1JGEM</div>
+                                <div class="teacher">Rabbi G Liss</div>
+                            </td>
+                            <td>
+                                <div class="subject">Biblical Hebrew</div>
+                                <div class="room">10B1JKLBHB</div>
+                                <div class="teacher">Mr B Rothstein</div>
+                            </td>
+                            <td>
+                                <div class="subject">Geography</div>
+                                <div class="room">10B3GEO</div>
+                                <div class="teacher">Mr C Gray</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="period-time">Period 5a</td>
+                            <td>
+                                <div class="subject">Chumash</div>
+                                <div class="room">10B1JGCHU</div>
+                                <div class="teacher">Mr A Nyman</div>
+                            </td>
+                            <td>
+                                <div class="subject">Gemoro</div>
+                                <div class="room">10B1JGEM</div>
+                                <div class="teacher">Rabbi G Liss</div>
+                            </td>
+                            <td>
+                                <div class="subject">Modern Hebrew</div>
+                                <div class="room">10B1MHB</div>
+                                <div class="teacher">Mr M Nicholls</div>
+                            </td>
+                            <td>
+                                <div class="subject">English</div>
+                                <div class="room">10BC3XENG</div>
+                                <div class="teacher">Ms A Greenwood</div>
+                            </td>
+                            <td>
+                                <div class="subject">English</div>
+                                <div class="room">10BC3XENG</div>
+                                <div class="teacher">Ms A Greenwood</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="period-time">Break</td>
+                            <td class="break">Break</td>
+                            <td class="break">Break</td>
+                            <td class="break">Break</td>
+                            <td class="break">Break</td>
+                            <td class="break">Break</td>
+                        </tr>
+                        <tr>
+                            <td class="period-time">M</td>
+                            <td>
+                                <div class="subject">Mincha</div>
+                                <div class="room">10BCheM1N</div>
+                                <div class="teacher">Rabbi G Liss</div>
+                            </td>
+                            <td>
+                                <div class="subject">Mincha</div>
+                                <div class="room">10BCheM1N</div>
+                                <div class="teacher">Rabbi G Liss</div>
+                            </td>
+                            <td>
+                                <div class="subject">Mincha</div>
+                                <div class="room">10BCheM1N</div>
+                                <div class="teacher">Rabbi G Liss</div>
+                            </td>
+                            <td>
+                                <div class="subject">Mincha</div>
+                                <div class="room">10BCheM1N</div>
+                                <div class="teacher">Rabbi G Liss</div>
+                            </td>
+                            <td class="empty">-</td>
+                        </tr>
+                        <tr>
+                            <td class="period-time">Period 6</td>
+                            <td>
+                                <div class="subject">Mathematics</div>
+                                <div class="room">10BC3XMAT</div>
+                                <div class="teacher">Mr D Kommas</div>
+                            </td>
+                            <td>
+                                <div class="subject">Mathematics</div>
+                                <div class="room">10BC3XMAT</div>
+                                <div class="teacher">Mr D Kommas</div>
+                            </td>
+                            <td>
+                                <div class="subject">Science</div>
+                                <div class="room">10BS3PHY</div>
+                                <div class="teacher">Mr M Buckley</div>
+                            </td>
+                            <td>
+                                <div class="subject">Computing</div>
+                                <div class="room">10B2DCMP</div>
+                                <div class="teacher">Mr O Hopplar</div>
+                            </td>
+                            <td class="empty">-</td>
+                        </tr>
+                        <tr>
+                            <td class="period-time">Period 7</td>
+                            <td>
+                                <div class="subject">Biblical Hebrew</div>
+                                <div class="room">10B1JKLBHB</div>
+                                <div class="teacher">Mr B Rothstein</div>
+                            </td>
+                            <td>
+                                <div class="subject">Mathematics</div>
+                                <div class="room">10BC3XMAT</div>
+                                <div class="teacher">Mr D Kommas</div>
+                            </td>
+                            <td>
+                                <div class="subject">Computing</div>
+                                <div class="room">10B2DCMP</div>
+                                <div class="teacher">Mr O Hopplar</div>
+                            </td>
+                            <td>
+                                <div class="subject">Gemoro</div>
+                                <div class="room">10B1JGEM</div>
+                                <div class="teacher">Rabbi G Liss</div>
+                            </td>
+                            <td class="empty">-</td>
+                        </tr>
+                        <tr>
+                            <td class="period-time">Period 8</td>
+                            <td>
+                                <div class="subject">Gemoro</div>
+                                <div class="room">10B1JGEM</div>
+                                <div class="teacher">Rabbi G Liss</div>
+                            </td>
+                            <td class="empty">-</td>
+                            <td>
+                                <div class="subject">Computing</div>
+                                <div class="room">10B2DCMP</div>
+                                <div class="teacher">Mr O Hopplar</div>
+                            </td>
+                            <td>
+                                <div class="subject">Chumash</div>
+                                <div class="room">10B1JGCHU</div>
+                                <div class="teacher">Mr A Nyman</div>
+                            </td>
+                            <td class="empty">-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showWeek(weekId) {
+            // Hide all week content
+            const weekContents = document.querySelectorAll('.week-content');
+            weekContents.forEach(content => {
+                content.style.display = 'none';
+            });
+
+            // Remove active class from all buttons
+            const buttons = document.querySelectorAll('.week-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected week content
+            document.getElementById(weekId).style.display = 'block';
+
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+
+</html>
