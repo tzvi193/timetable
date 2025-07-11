@@ -568,6 +568,13 @@
     </div>
 
     <script>
+        onkeypress = function (e) {
+            if (e.key === '1') {
+                showWeek('week1');
+            } else if (e.key === '2') {
+                showWeek('week2');
+            }
+        };
         function showWeek(weekId) {
             // Hide all week content
             const weekContents = document.querySelectorAll('.week-content');
@@ -584,8 +591,12 @@
             // Show selected week content
             document.getElementById(weekId).style.display = 'block';
 
-            // Add active class to clicked button
-            event.target.classList.add('active');
+            // Add active class to the correct button
+            if (weekId === 'week1') {
+                buttons[0].classList.add('active');
+            } else if (weekId === 'week2') {
+                buttons[1].classList.add('active');
+            }
         }
     </script>
 </body>
