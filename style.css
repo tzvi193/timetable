@@ -75,6 +75,11 @@ body {
     color: #ffffff;
 }
 
+button:focus {
+    outline: none;
+    box-shadow: none;
+}
+
 .timetable-container {
     padding: 30px;
 }
