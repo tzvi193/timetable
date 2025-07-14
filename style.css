@@ -186,7 +186,6 @@ button:focus {
     outline-offset: -3px; /* Pulls the outline inside the cell padding */
 }
 
-
 @media (max-width: 768px) {
     .week-selector {
         flex-direction: column;
