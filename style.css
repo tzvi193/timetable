@@ -170,6 +170,23 @@ button:focus {
     font-style: italic;
 }
 
+/* --- NEW HIGHLIGHTING STYLES --- */
+
+/* Style for the CURRENT lesson */
+.highlight-current {
+    /* Use outline to avoid affecting table layout */
+    outline: 3px solid #0cb300; /* A gold/yellow color */
+    outline-offset: -3px; /* Pulls the outline inside the cell padding */
+}
+
+/* Style for the NEXT lesson */
+.highlight-next {
+    /* Use outline to avoid affecting table layout */
+    outline: 3px solid #00509e; /* A gold/yellow color */
+    outline-offset: -3px; /* Pulls the outline inside the cell padding */
+}
+
+
 @media (max-width: 768px) {
     .week-selector {
         flex-direction: column;
