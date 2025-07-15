@@ -19,6 +19,7 @@
         <div class="week-selector">
             <button class="week-btn active" onclick="showWeek('week1')">Week 1</button>
             <button class="week-btn" onclick="showWeek('week2')">Week 2</button>
+            <button class="week-btn" id="showBooksBtn">Show Books for Today</button> 
         </div>
 
         <div class="timetable-container">
@@ -566,7 +567,17 @@
                 </table>
             </div>
         </div>
-    </div>
+        <div id="booksModal" class="modal">
+            <div class="modal-content">
+                <span class="close-button">×</span>
+                <h3 id="booksModalTitle">Books for Today</h3>
+                <ul id="booksList">
+                    <!-- Books will be listed here by JavaScript -->
+                </ul>
+                <p id="noBooksMessage" style="display: none;">No specific books listed for today's lessons.</p>
+            </div>
+        </div>
+    </div> <!-- End of .container -->
 
     <script src="script.js"></script>
 </body>

@@ -186,6 +186,110 @@ button:focus {
     outline-offset: -3px; /* Pulls the outline inside the cell padding */
 }
 
+/* Styles for the modal (popup) */
+/* Styles for the modal (popup) */
+.modal {
+    display: block; /* Keep it block for transitions, hide with opacity/visibility */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.7);
+    padding-top: 60px;
+
+    /* --- NEW TRANSITION PROPERTIES --- */
+    opacity: 0; /* Start hidden */
+    visibility: hidden; /* Hide completely from interaction */
+    transition: opacity 0.2s ease-out, visibility 0.2s ease-out; /* Smooth transition */
+}
+
+/* This class will be added by JavaScript to show the modal */
+.modal.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content {
+    background-color: #2d2d2d;
+    margin: 5% auto;
+    padding: 30px;
+    border: 1px solid #404040;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 500px;
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    color: #e0e0e0;
+
+    /* --- NEW TRANSITION PROPERTIES for the content movement --- */
+    transform: translateY(20px); /* Start slightly below its final position */
+    transition: transform 0.2s ease-out; /* Smooth transition for slide */
+}
+
+/* When the modal is visible, slide its content up to position */
+.modal.show .modal-content {
+    transform: translateY(0); /* Slide to its normal position */
+}
+
+/* ... rest of your CSS ... */
+
+.modal-content h3 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1.8em;
+    color: #ffffff;
+}
+
+.modal-content ul {
+    list-style-type: none; /* Remove bullet points */
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+.modal-content ul li {
+    background: #363636;
+    margin-bottom: 8px;
+    padding: 12px 15px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.1em;
+    border: 1px solid #404040;
+}
+
+.modal-content ul li:last-child {
+    margin-bottom: 0; /* No margin after the last item */
+}
+
+.close-button {
+    color: #aaa;
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    font-size: 35px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: #e0e0e0;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#noBooksMessage {
+    text-align: center;
+    font-style: italic;
+    color: #b0b0b0;
+    margin-top: 15px;
+}
+
 @media (max-width: 768px) {
     .week-selector {
         flex-direction: column;
@@ -207,5 +311,19 @@ button:focus {
     
     .header h1 {
         font-size: 1.8em;
+    }
+        .modal-content {
+        width: 90%;
+        margin-top: 30px;
+        padding: 20px;
+    }
+
+    .modal-content h3 {
+        font-size: 1.5em;
+    }
+
+    .modal-content ul li {
+        font-size: 1em;
+        padding: 10px 12px;
     }
 }
