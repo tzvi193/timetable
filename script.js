@@ -19,14 +19,14 @@ function showWeek(weekId) {
 
     document.getElementById(weekId).style.display = 'block';
 
-    // Highlight the active week button, excluding the "Show Books" button
+    // Highlight the active week button
     if (weekId === 'week1') {
         document.querySelector('.week-btn[onclick="showWeek(\'week1\')"]').classList.add('active');
     } else if (weekId === 'week2') {
         document.querySelector('.week-btn[onclick="showWeek(\'week2\')"]').classList.add('active');
     }
 
-    // NEW: Save the active week to localStorage
+    // Save the active week to localStorage
     localStorage.setItem('activeWeek', weekId);
 
     // Re-run the highlight function when switching weeks to ensure it's visible
@@ -143,27 +143,43 @@ const subjectBookMap = {
     "English": ["English Notebook", "Jekyll + Hyde text"],
     "Modern Hebrew": ["Mh Book"],
     "Computing": [],
-    "Bioligy": ["Laptop"], // "Bioligy" as it appears in your HTML
-    "Biology": ["Laptop"], // Corrected spelling for internal use
+    "Biology": ["Laptop"], // Corrected spelling for consistency
     "Physics": ["Laptop"],
-    "P.E.": ["PE Kit"], // No book, but practical items
+    "P.E.": ["PE Kit"], 
     "Gemoro": [],
-    "Geography": ["Laptop"], // "geography i type on my laptop"
+    "Geography": ["Laptop"], 
     "Biblical Hebrew": ["Josephs Rise To Power text"],
     "Chumash": [],
     "P.S.H.E.": [],
     "Mincha": [],
-    "Registration": [], // General item
-    // Add other subjects as they appear in your timetable HTML
-    // If a subject is not listed here, it will default to "No specific items".
+    "Registration": [], 
 };
 
-function getBooksForToday() {
-    const now = new Date();
-    const day = now.getDay(); // 0=Sun, 1=Mon, ..., 5=Fri, 6=Sat
+/**
+ * Retrieves the books needed for a specific day.
+ * If the target day is a weekend, it will automatically shift to the next Monday.
+ * @param {Date} targetDate The date for which to get books.
+ * @returns {object} An object containing 'books' (array) and 'message' (string),
+ *                   and 'effectiveDayName' if the day was shifted.
+ */
+function getBooksForDay(targetDate) {
+    const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    let targetDayIndex = targetDate.getDay(); // 0=Sun, 1=Mon, ..., 5=Fri, 6=Sat
 
-    if (day === 0 || day === 6) { // Sunday or Saturday
-        return { message: "It's the weekend! No lessons today." };
+    let message = null;
+    let booksNeeded = new Set();
+    let hasLessons = false;
+    let effectiveDate = new Date(targetDate); // Use a copy to modify if needed
+
+    // Determine the actual school day to get books for
+    if (targetDayIndex === 0) { // If Sunday
+        message = `No lessons scheduled for Sunday. Showing books for Monday instead.`;
+        effectiveDate.setDate(effectiveDate.getDate() + 1); // Move to Monday
+        targetDayIndex = effectiveDate.getDay(); // Will be 1 (Monday)
+    } else if (targetDayIndex === 6) { // If Saturday
+        message = `No lessons scheduled for Saturday. Showing books for Monday instead.`;
+        effectiveDate.setDate(effectiveDate.getDate() + 2); // Move to Monday (Sunday + 2)
+        targetDayIndex = effectiveDate.getDay(); // Will be 1 (Monday)
     }
 
     const activeWeekId = localStorage.getItem('activeWeek') || 'week1';
@@ -173,75 +189,75 @@ function getBooksForToday() {
         return { message: "Timetable not found for the active week." };
     }
 
-    const booksNeeded = new Set();
-    let hasLessons = false; // Flag to check if there are any actual lessons today
+    // dayColumnIndex directly maps to table column index (Monday is 1, Tuesday is 2, etc.)
+    const dayColumnIndex = targetDayIndex; 
 
-    // Iterate through rows (periods) of the active table for the current day's column
     const rows = activeTable.querySelectorAll('tbody tr');
 
     rows.forEach(row => {
-        // cells[0] is Time, cells[1] is Monday, cells[2] is Tuesday, etc.
-        const dayCell = row.cells[day]; 
+        const dayCell = row.cells[dayColumnIndex]; 
 
         if (dayCell && dayCell.classList.contains('lesson')) {
-            hasLessons = true; // Mark that there's at least one lesson today
+            hasLessons = true;
             const subjectElement = dayCell.querySelector('.subject');
 
             if (subjectElement) {
                 let subject = subjectElement.textContent.trim();
                 
-                // Handle the typo for "Bioligy" if it exists in your HTML
+                // Handle the typo "Bioligy" from HTML to "Biology" for lookup
                 if (subject === "Bioligy") {
-                    subject = "Biology"; // Use the correct spelling for lookup in subjectBookMap
+                    subject = "Biology"; 
                 }
 
                 if (subjectBookMap[subject]) {
                     subjectBookMap[subject].forEach(item => booksNeeded.add(item));
                 } else {
                     console.warn(`No specific book mapping for subject: "${subject}". Consider adding it to subjectBookMap.`);
-                    // Optional: add a generic fallback if no specific mapping is found
-                    // booksNeeded.add(`Notebook for ${subject}`); 
                 }
             }
         }
     });
 
-    if (!hasLessons) {
-        return { message: "No lessons scheduled for today." }; // E.g., a school holiday or an entirely empty day
-    }
-
-    // Remove "No book needed" if other items are present and it's not the only item
-    if (booksNeeded.has("No book needed") && booksNeeded.size > 1) {
-        booksNeeded.delete("No book needed");
+    if (!hasLessons && !message) { 
+        message = "No lessons scheduled for this day.";
+    } else if (booksNeeded.size === 0 && !message) {
+        message = "All lessons this day require no specific books.";
     }
     
-    // If after processing, no specific books were added, it means all lessons require no specific books
-    if (booksNeeded.size === 0) {
-        return { message: "All lessons today require no specific books." };
-    }
-    
-    // Sort the list for consistent display
     const sortedBooks = Array.from(booksNeeded).sort();
 
-    return { books: sortedBooks };
+    return { 
+        books: sortedBooks, 
+        message: message, 
+        effectiveDayName: dayNames[effectiveDate.getDay()] // Name of the day books were actually retrieved for
+    };
 }
 
 
-// --- MODAL AND BUTTON LOGIC ---
-const showBooksBtn = document.getElementById('showBooksBtn');
+// --- MODAL LOGIC ---
 const booksModal = document.getElementById('booksModal');
 const closeButton = document.querySelector('.close-button');
 const booksList = document.getElementById('booksList');
 const noBooksMessage = document.getElementById('noBooksMessage');
 const booksModalTitle = document.getElementById('booksModalTitle');
 
-showBooksBtn.addEventListener('click', () => {
-    const today = new Date();
+/**
+ * Populates and displays the books modal for a given date.
+ * @param {Date} dateToDisplay The date object for which books are requested.
+ * @param {string} titlePrefix Prefix for the modal title (e.g., "Books for").
+ */
+function displayBooksModal(dateToDisplay, titlePrefix) {
     const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-    booksModalTitle.textContent = `Books for ${dayNames[today.getDay()]}`;
-
-    const bookData = getBooksForToday();
     
+    const bookData = getBooksForDay(dateToDisplay);
+    
+    // Adjust modal title based on whether the day was shifted (e.g., weekend to Monday)
+    if (bookData.effectiveDayName && bookData.effectiveDayName !== dayNames[dateToDisplay.getDay()]) {
+        booksModalTitle.textContent = `${titlePrefix} ${dayNames[dateToDisplay.getDay()]} (Showing ${bookData.effectiveDayName}'s Books)`;
+    } else {
+        booksModalTitle.textContent = `${titlePrefix} ${dayNames[dateToDisplay.getDay()]}`;
+    }
+
     booksList.innerHTML = ''; // Clear previous list
     noBooksMessage.style.display = 'none';
 
@@ -255,30 +271,29 @@ showBooksBtn.addEventListener('click', () => {
         noBooksMessage.textContent = bookData.message;
         noBooksMessage.style.display = 'block';
     } else {
-        // Fallback for unexpected cases, though the above should cover most
         noBooksMessage.textContent = "Could not retrieve book information.";
         noBooksMessage.style.display = 'block';
     }
 
-    booksModal.classList.add('show'); // Show the modal
-});
+    booksModal.classList.add('show'); 
+}
 
 closeButton.addEventListener('click', () => {
-    booksModal.classList.remove('show'); // NEW: Remove 'show' class
+    booksModal.classList.remove('show'); 
 });
 
 
 // Close the modal if user clicks outside of it
 window.addEventListener('click', (event) => {
     if (event.target == booksModal) {
-        booksModal.classList.remove('show'); // NEW: Remove 'show' class
+        booksModal.classList.remove('show'); 
     }
 });
 
 
-// Run the function once on load, then every minute to keep it updated
+// --- NEW: Event Listeners for Day Headers ---
 document.addEventListener('DOMContentLoaded', () => {
-    // NEW: Load the active week from localStorage or default to 'week1'
+    // Load the active week from localStorage or default to 'week1'
     const savedWeek = localStorage.getItem('activeWeek');
     if (savedWeek) {
         showWeek(savedWeek);
@@ -289,4 +304,28 @@ document.addEventListener('DOMContentLoaded', () => {
     // Now that the correct week is displayed, update highlights
     updateLessonHighlight();
     setInterval(updateLessonHighlight, 60000); // 60000 ms = 1 minute
+
+    // Add click listeners to all day headers in the timetable
+    const dayHeaders = document.querySelectorAll('.timetable th.day-header');
+    const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]; // Full names for date calculation
+
+    dayHeaders.forEach(header => {
+        header.addEventListener('click', function() {
+            const clickedColumnIndex = this.cellIndex; // 1 for Monday, 2 for Tuesday, etc.
+
+            // Get current date to establish a baseline
+            const today = new Date();
+            const currentDayOfWeek = today.getDay(); // 0 for Sunday, 1 for Monday, etc.
+
+            // Create a dummy date object that has the same day of the week as the clicked header
+            // This is important because getBooksForDay uses the .getDay() method of the Date object.
+            let dummyDateForClickedDay = new Date(today); // Start with today's date
+            // Adjust the date so its getDay() matches the clicked column's day index
+            // The column index directly corresponds to Date.getDay() for Mon (1) to Fri (5)
+            dummyDateForClickedDay.setDate(today.getDate() + (clickedColumnIndex - currentDayOfWeek));
+            
+            // Call the modal display function with the calculated dummy date
+            displayBooksModal(dummyDateForClickedDay, "Books for");
+        });
+    });
 });

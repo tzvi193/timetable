@@ -111,6 +111,16 @@ button:focus {
     border-right: none;
 }
 
+/* New style for clickable day headers */
+.timetable th.day-header {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.timetable th.day-header:hover {
+    background: #262626; /* Slightly lighter background on hover */
+}
+
 .timetable td {
     padding: 12px;
     text-align: center;
@@ -170,26 +180,20 @@ button:focus {
     font-style: italic;
 }
 
-/* --- NEW HIGHLIGHTING STYLES --- */
-
-/* Style for the CURRENT lesson */
+/* --- HIGHLIGHTING STYLES --- */
 .highlight-current {
-    /* Use outline to avoid affecting table layout */
-    outline: 3px solid #0cb300; /* A gold/yellow color */
-    outline-offset: -3px; /* Pulls the outline inside the cell padding */
+    outline: 3px solid #0cb300;
+    outline-offset: -3px;
 }
 
-/* Style for the NEXT lesson */
 .highlight-next {
-    /* Use outline to avoid affecting table layout */
-    outline: 3px solid #00509e; /* A gold/yellow color */
-    outline-offset: -3px; /* Pulls the outline inside the cell padding */
+    outline: 3px solid #00509e;
+    outline-offset: -3px;
 }
 
-/* Styles for the modal (popup) */
 /* Styles for the modal (popup) */
 .modal {
-    display: block; /* Keep it block for transitions, hide with opacity/visibility */
+    display: block;
     position: fixed;
     z-index: 1000;
     left: 0;
@@ -200,13 +204,11 @@ button:focus {
     background-color: rgba(0,0,0,0.7);
     padding-top: 60px;
 
-    /* --- NEW TRANSITION PROPERTIES --- */
-    opacity: 0; /* Start hidden */
-    visibility: hidden; /* Hide completely from interaction */
-    transition: opacity 0.2s ease-out, visibility 0.2s ease-out; /* Smooth transition */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease-out, visibility 0.2s ease-out;
 }
 
-/* This class will be added by JavaScript to show the modal */
 .modal.show {
     opacity: 1;
     visibility: visible;
@@ -224,17 +226,13 @@ button:focus {
     box-shadow: 0 5px 15px rgba(0,0,0,0.5);
     color: #e0e0e0;
 
-    /* --- NEW TRANSITION PROPERTIES for the content movement --- */
-    transform: translateY(20px); /* Start slightly below its final position */
-    transition: transform 0.2s ease-out; /* Smooth transition for slide */
+    transform: translateY(20px);
+    transition: transform 0.2s ease-out;
 }
 
-/* When the modal is visible, slide its content up to position */
 .modal.show .modal-content {
-    transform: translateY(0); /* Slide to its normal position */
+    transform: translateY(0);
 }
-
-/* ... rest of your CSS ... */
 
 .modal-content h3 {
     text-align: center;
@@ -244,7 +242,7 @@ button:focus {
 }
 
 .modal-content ul {
-    list-style-type: none; /* Remove bullet points */
+    list-style-type: none;
     padding: 0;
     margin-bottom: 20px;
 }
@@ -262,7 +260,7 @@ button:focus {
 }
 
 .modal-content ul li:last-child {
-    margin-bottom: 0; /* No margin after the last item */
+    margin-bottom: 0;
 }
 
 .close-button {
