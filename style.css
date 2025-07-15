@@ -193,7 +193,7 @@ button:focus {
 
 /* Styles for the modal (popup) */
 .modal {
-    display: block;
+    display: block; /* Keep it block for transitions, hide with opacity/visibility */
     position: fixed;
     z-index: 1000;
     left: 0;
@@ -202,11 +202,17 @@ button:focus {
     height: 100%;
     overflow: auto;
     background-color: rgba(0,0,0,0.7);
-    padding-top: 60px;
+    /* Remove padding-top here as the content will center itself */
+    /* padding-top: 60px; */ 
 
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.2s ease-out, visibility 0.2s ease-out;
+    opacity: 0; /* Start hidden */
+    visibility: hidden; /* Hide completely from interaction */
+    transition: opacity 0.2s ease-out, visibility 0.2s ease-out; /* Smooth transition */
+
+    /* Add flexbox for centering its direct child (the modal-content) */
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center;     /* Center vertically */
 }
 
 .modal.show {
