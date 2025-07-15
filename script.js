@@ -1,5 +1,4 @@
-
-// --- WEEK TOGGLE SCRIPT (Your original) ---
+// --- WEEK TOGGLE SCRIPT ---
 onkeypress = function(e) {
     if (e.key === '1') {
         showWeek('week1');
@@ -17,12 +16,18 @@ function showWeek(weekId) {
     buttons.forEach(btn => {
         btn.classList.remove('active');
     });
+
     document.getElementById(weekId).style.display = 'block';
+
     if (weekId === 'week1') {
         buttons[0].classList.add('active');
     } else if (weekId === 'week2') {
         buttons[1].classList.add('active');
     }
+
+    // NEW: Save the active week to localStorage
+    localStorage.setItem('activeWeek', weekId);
+
     // Re-run the highlight function when switching weeks to ensure it's visible
     updateLessonHighlight();
 }
@@ -36,10 +41,10 @@ const lessonSchedule = [
     { name: "Period 1",     start: "09:00", end: "09:45" }, // Period Row 1
     { name: "Period 2",     start: "09:45", end: "10:30" }, // Period Row 2
     { name: "Period 3",     start: "10:30", end: "11:15" }, // Period Row 3
-    // Row is a break, so we skip it in this schedule
+    // Row is a break (Period 3 ends 11:15, Period 4 starts 11:35)
     { name: "Period 4",     start: "11:35", end: "12:20" }, // Period Row 4
     { name: "Period 5a",    start: "12:20", end: "13:05" }, // Period Row 5
-    // Row is a break, so we skip it in this schedule
+    // Row is a break (Period 5a ends 13:05, Mincha starts 13:50)
     { name: "Mincha",       start: "13:50", end: "14:05" }, // Period Row 7
     { name: "Period 6",     start: "14:05", end: "14:50" }, // Period Row 8
     { name: "Period 7",     start: "14:50", end: "15:35" }, // Period Row 9
@@ -47,11 +52,15 @@ const lessonSchedule = [
 ];
 
 // This maps a schedule index to the actual row index in the HTML table
+// (e.g., schedule entry 0 is HTML row 0, schedule entry 3 is HTML row 3, 
+// schedule entry 4 (Period 4) is HTML row 4, etc. - accounting for break rows)
 const scheduleRowMap = [0, 1, 2, 3, 4, 5, 7, 8, 9, 10]; 
 
 function updateLessonHighlight() {
     const now = new Date();
-    // Use `new Date("2024-07-16T10:30:00")` for testing different times
+    // For testing different times uncomment the line below and change the time:
+    // const now = new Date("2024-07-16T10:30:00"); 
+
     const day = now.getDay(); // 0=Sun, 1=Mon, 2=Tue, ..., 6=Sat
     const currentTime = now.toTimeString().slice(0, 5); // "HH:MM"
 
@@ -64,33 +73,47 @@ function updateLessonHighlight() {
     let nextPeriod = null;
 
     // --- Find current and next period for today ---
-    if (day >= 1 && day <= 5) { // If it's a weekday
+    if (day >= 1 && day <= 5) { // If it's a weekday (Monday=1 to Friday=5)
         for (let i = 0; i < lessonSchedule.length; i++) {
             const period = lessonSchedule[i];
             // Check for current lesson
             if (currentTime >= period.start && currentTime < period.end) {
                 currentPeriod = { day: day, periodIndex: i };
             }
-            // Find the very next lesson of the day
-            if (currentTime < period.start && !nextPeriod) {
-                nextPeriod = { day: day, periodIndex: i };
+            // Find the very next lesson of the day (if not already found)
+            if (currentTime < period.start && !nextPeriod && !currentPeriod) {
+                 nextPeriod = { day: day, periodIndex: i };
             }
         }
-    }
-
-    // --- Logic for finding the next lesson if it's not today ---
-    if (!nextPeriod) {
-        let nextDay = (day >= 1 && day <= 4) ? day + 1 : 1; // If Mon-Thurs, next day is tomorrow. Else, it's Monday.
-        if (day === 5 && currentTime >= lessonSchedule[lessonSchedule.length - 1].end) {
-            nextDay = 1; // After last lesson on Friday, next is Monday
+        // If currentPeriod was found, and there's a next one for *today*, set it.
+        // This handles the case where currentPeriod is the last period of the day.
+        if (currentPeriod && currentPeriod.periodIndex < lessonSchedule.length -1) {
+            nextPeriod = { day: day, periodIndex: currentPeriod.periodIndex + 1};
+        } else if (currentPeriod && currentPeriod.periodIndex === lessonSchedule.length - 1) {
+             // If the current period is the last of the day, next period is Monday's first
+            let nextDay = (day === 5) ? 1 : day + 1; // If Friday, next is Monday, else next day
+            nextPeriod = { day: nextDay, periodIndex: 0 };
         }
-        nextPeriod = { day: nextDay, periodIndex: 0 }; // First period of the next school day
+
+    } else { // It's a weekend (Saturday or Sunday), next period is always Monday's first
+        nextPeriod = { day: 1, periodIndex: 0 };
     }
     
+    // If no next period was found because it's past all periods on a weekday, then it's next Monday.
+    if (!nextPeriod && day >= 1 && day <=5 && currentTime >= lessonSchedule[lessonSchedule.length -1].end) {
+        let nextDay = (day === 5) ? 1 : day + 1;
+        nextPeriod = { day: nextDay, periodIndex: 0 };
+    } else if (!nextPeriod && (day === 0 || day === 6)) { // If it's Saturday or Sunday
+        nextPeriod = { day: 1, periodIndex: 0 };
+    }
+
     // --- Apply the highlight classes ---
-    const tables = document.querySelectorAll('.timetable');
-    tables.forEach(table => {
-        const rows = table.querySelectorAll('tbody tr');
+    // Only highlight in the currently visible table
+    const activeWeekId = localStorage.getItem('activeWeek') || 'week1'; // Get the active week ID
+    const activeTable = document.getElementById(activeWeekId).querySelector('.timetable');
+
+    if (activeTable) {
+        const rows = activeTable.querySelectorAll('tbody tr');
         
         // Highlight CURRENT lesson
         if (currentPeriod) {
@@ -109,11 +132,20 @@ function updateLessonHighlight() {
                 cell.classList.add('highlight-next');
             }
         }
-    });
+    }
 }
 
 // Run the function once on load, then every minute to keep it updated
 document.addEventListener('DOMContentLoaded', () => {
+    // NEW: Load the active week from localStorage or default to 'week1'
+    const savedWeek = localStorage.getItem('activeWeek');
+    if (savedWeek) {
+        showWeek(savedWeek);
+    } else {
+        showWeek('week1'); // Default to Week 1 if no saved preference
+    }
+
+    // Now that the correct week is displayed, update highlights
     updateLessonHighlight();
     setInterval(updateLessonHighlight, 60000); // 60000 ms = 1 minute
 });
