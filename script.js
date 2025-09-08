@@ -7,29 +7,62 @@ onkeypress = function(e) {
     }
 };
 
+/**
+ * NEW: Updated showWeek function with animations
+ */
 function showWeek(weekId) {
-    const weekContents = document.querySelectorAll('.week-content');
-    weekContents.forEach(content => {
-        content.style.display = 'none';
-    });
+    const animationDuration = 300; // ms, should be slightly less than CSS animation time
+    const newWeek = document.getElementById(weekId);
+    if (!newWeek) return;
+
+    // Find the currently visible week
+    const currentWeek = document.querySelector('.week-content:not([style*="display: none"])');
+    
+    // Animate slider
+    const slider = document.querySelector('.week-slider');
+    const container = document.querySelector('.week-slider-container');
+    if (slider && container) {
+        const containerWidth = container.offsetWidth;
+        const buttonWidth = newWeek.offsetWidth / 2; // Simple approximation
+        const padding = 5; // As per new CSS
+        slider.style.width = `calc(50% - ${padding}px)`;
+        slider.style.left = (weekId === 'week1' ? padding + 'px' : `calc(50%)`);
+    }
+
+    // Update buttons
     const buttons = document.querySelectorAll('.week-btn');
-    buttons.forEach(btn => {
-        btn.classList.remove('active');
-    });
+    buttons.forEach(btn => btn.classList.remove('active'));
+    document.querySelector(`.week-btn[onclick="showWeek('${weekId}')"]`)?.classList.add('active');
 
-    document.getElementById(weekId).style.display = 'block';
+    // Handle the timetable animation
+    if (currentWeek && currentWeek.id !== weekId) {
+        // 1. Fade out the current week
+        currentWeek.classList.add('fade-out-down');
 
-    // Highlight the active week button
-    if (weekId === 'week1') {
-        document.querySelector('.week-btn[onclick="showWeek(\'week1\')"]').classList.add('active');
-    } else if (weekId === 'week2') {
-        document.querySelector('.week-btn[onclick="showWeek(\'week2\')"]').classList.add('active');
+        // 2. After the fade-out animation, hide it and show the new one
+        setTimeout(() => {
+            currentWeek.style.display = 'none';
+            currentWeek.classList.remove('fade-out-down');
+
+            // 3. Prepare and fade in the new week
+            newWeek.style.display = 'block';
+            newWeek.classList.add('fade-in-up');
+            
+            // 4. Clean up the fade-in class
+            setTimeout(() => {
+                newWeek.classList.remove('fade-in-up');
+            }, animationDuration);
+
+        }, animationDuration);
+    } else if (!currentWeek) {
+        // If no week is visible (on initial load), just show the target week
+        newWeek.style.display = 'block';
     }
 
     // Save the active week to localStorage
     localStorage.setItem('activeWeek', weekId);
 
-    // Re-run the highlight function when switching weeks to ensure it's visible
+    // Re-run the highlight function when switching weeks
     updateLessonHighlight();
 }
 
@@ -110,7 +143,7 @@ function updateLessonHighlight() {
     // --- Apply the highlight classes ---
     // Only highlight in the currently visible table
     const activeWeekId = localStorage.getItem('activeWeek') || 'week1'; // Get the active week ID
-    const activeTable = document.getElementById(activeWeekId).querySelector('.timetable');
+    const activeTable = document.getElementById(activeWeekId)?.querySelector('.timetable');
 
     if (activeTable) {
         const rows = activeTable.querySelectorAll('tbody tr');
@@ -143,7 +176,7 @@ const subjectBookMap = {
     "English": ["English Notebook", "Jekyll + Hyde text"],
     "Modern Hebrew": ["Mh Book"],
     "Computing": [],
-    "Biology": ["Laptop"], // Corrected spelling for consistency
+    "Biology": ["Laptop"],
     "Physics": ["Laptop"],
     "P.E.": ["PE Kit"], 
     "Gemoro": [],
@@ -291,7 +324,7 @@ window.addEventListener('click', (event) => {
 });
 
 
-// --- NEW: Event Listeners for Day Headers ---
+// --- DOMContentLoaded: Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
     // Load the active week from localStorage or default to 'week1'
     const savedWeek = localStorage.getItem('activeWeek');
@@ -301,30 +334,29 @@ document.addEventListener('DOMContentLoaded', () => {
         showWeek('week1'); // Default to Week 1 if no saved preference
     }
 
+    // Animate slider on window resize (to keep position correct)
+    window.addEventListener('resize', () => {
+        const activeWeek = localStorage.getItem('activeWeek') || 'week1';
+        showWeek(activeWeek);
+    });
+
     // Now that the correct week is displayed, update highlights
     updateLessonHighlight();
     setInterval(updateLessonHighlight, 60000); // 60000 ms = 1 minute
 
     // Add click listeners to all day headers in the timetable
     const dayHeaders = document.querySelectorAll('.timetable th.day-header');
-    const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]; // Full names for date calculation
-
+    
     dayHeaders.forEach(header => {
         header.addEventListener('click', function() {
             const clickedColumnIndex = this.cellIndex; // 1 for Monday, 2 for Tuesday, etc.
 
-            // Get current date to establish a baseline
             const today = new Date();
             const currentDayOfWeek = today.getDay(); // 0 for Sunday, 1 for Monday, etc.
 
-            // Create a dummy date object that has the same day of the week as the clicked header
-            // This is important because getBooksForDay uses the .getDay() method of the Date object.
-            let dummyDateForClickedDay = new Date(today); // Start with today's date
-            // Adjust the date so its getDay() matches the clicked column's day index
-            // The column index directly corresponds to Date.getDay() for Mon (1) to Fri (5)
+            let dummyDateForClickedDay = new Date(today);
             dummyDateForClickedDay.setDate(today.getDate() + (clickedColumnIndex - currentDayOfWeek));
             
-            // Call the modal display function with the calculated dummy date
             displayBooksModal(dummyDateForClickedDay, "Books for");
         });
     });
