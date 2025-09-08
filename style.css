@@ -134,6 +134,8 @@ button:focus { outline: none; box-shadow: none; }
 
 /* --- MODAL (POPUP) STYLES --- */
 /* The full-screen overlay */
+/* --- MODAL (POPUP) STYLES --- */
+/* The full-screen overlay */
 .modal {
     position: fixed; /* Lock to viewport */
     z-index: 1000;
@@ -141,13 +143,7 @@ button:focus { outline: none; box-shadow: none; }
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-
-    /* The reliable centering logic */
-    display: flex;
-    justify-content: center; /* Center horizontally */
-    align-items: center;     /* Center vertically */
-    
+    background-color: rgba(0, 0, 0, 0.7);  
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
@@ -161,9 +157,9 @@ button:focus { outline: none; box-shadow: none; }
 
 /* The actual popup box */
 .modal-content {
-    /* NO position, top, left, or margin needed. 
-       Flexbox on the parent handles all centering. */
-
+    position: fixed;
+    top: calc(50vh - 225px);
+    left: calc(50vw - 250px);
     /* Animation */
     opacity: 0;
     transform: scale(0.95);
@@ -176,8 +172,8 @@ button:focus { outline: none; box-shadow: none; }
     padding: 35px;
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 12px;
-    width: 90%;
-    max-width: 500px;
+    height: 450px;
+    width: 500px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
     color: #e0e0e0;
 }
