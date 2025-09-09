@@ -351,16 +351,32 @@ document.addEventListener('DOMContentLoaded', () => {
     updateLessonHighlight();
     setInterval(updateLessonHighlight, 60000); // 60000 ms = 1 minute
 
-    // --- COMPACT MODE LOGIC ---
+    // --- COMPACT MODE LOGIC (REVISED) ---
     const compactToggle = document.getElementById('compactToggle');
+    let compactActive = false; // Keep track of state
+
     function setCompactMode(enabled) {
         document.body.classList.toggle('compact-mode', enabled);
+        
+        // Update week button text
+        const weekButtons = document.querySelectorAll('.week-btn');
+        weekButtons.forEach(btn => {
+            const weekNum = btn.dataset.week;
+            btn.textContent = enabled ? weekNum : `Week ${weekNum}`;
+        });
+
+        // Update compact toggle button appearance
         if (compactToggle) {
             compactToggle.classList.toggle('active', enabled);
-            compactToggle.textContent = enabled ? 'Exit Compact' : 'Compact Mode';
+            compactToggle.title = enabled ? "Exit compact mode (F)" : "Toggle compact mode (F)";
+            compactToggle.innerHTML = enabled ? '&#x2715;' : '⛶'; // "✕" vs "⛶"
         }
+        
+        // Store the state
+        localStorage.setItem('compactMode', enabled);
     }
-    let compactActive = false;
+
+    // Event listeners for compact mode
     if (compactToggle) {
         compactToggle.addEventListener('click', () => {
             compactActive = !compactActive;
@@ -373,6 +389,17 @@ document.addEventListener('DOMContentLoaded', () => {
             setCompactMode(compactActive);
         }
     });
+
+    // Initialize compact mode from localStorage
+    const savedCompactState = localStorage.getItem('compactMode') === 'true';
+    if (savedCompactState) {
+        compactActive = true;
+        setCompactMode(true);
+    } else {
+        compactActive = false;
+        setCompactMode(false); // Ensure default state is applied correctly
+    }
+    // --- END REVISED COMPACT MODE LOGIC ---
 
     // Add click listeners to all day headers in the timetable
     const dayHeaders = document.querySelectorAll('.timetable th.day-header');
@@ -390,8 +417,6 @@ document.addEventListener('DOMContentLoaded', () => {
             displayBooksModal(dummyDateForClickedDay, "Books for");
         });
     });
-
-    // Add this inside your DOMContentLoaded event listener, after the existing code:
 
     // Add click listeners for bouncy slider
     const weekSlider = document.getElementById('weekSlider');
@@ -476,6 +501,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Call on load and every second
+    updateLessonInfoBoxes();
     setInterval(updateLessonInfoBoxes, 1000);
-    document.addEventListener('DOMContentLoaded', updateLessonInfoBoxes);
 });

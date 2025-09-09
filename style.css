@@ -28,6 +28,7 @@ body {
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
     overflow: hidden;
     border: 1px solid rgba(255, 255, 255, 0.12);
+    transition: all 0.3s ease; /* Added for smooth transition */
 }
 
 .header {
@@ -52,13 +53,13 @@ body {
 }
 
 /* --- WEEK SELECTOR & BOUNCY TOGGLE --- */
-/* --- WEEK SELECTOR & BOUNCY TOGGLE --- */
 .week-selector {
     display: flex;
     justify-content: center;
     padding: 30px;
     background: rgba(20, 20, 20, 0.1);
     border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    transition: all 0.3s ease; /* Added for smooth transition */
 }
 
 .week-selector-flex {
@@ -229,6 +230,7 @@ body {
     padding: 30px;
     position: relative;
     min-height: 500px;
+    transition: all 0.3s ease; /* Added for smooth transition */
 }
 
 .week-content.fade-in-up {
@@ -386,9 +388,6 @@ body {
 }
 
 /* --- MODAL (POPUP) STYLES --- */
-/* The full-screen overlay */
-/* --- MODAL (POPUP) STYLES --- */
-/* The full-screen overlay */
 .modal {
     position: fixed;
     /* Lock to viewport */
@@ -584,7 +583,6 @@ body {
     text-align: center;
 }
 
-/* --- COMPACT MODE STYLES --- */
 .compact-toggle {
     background: rgba(0, 0, 0, 0.4);
     border-radius: 50px;
@@ -593,9 +591,11 @@ body {
         inset 0 2px 4px rgba(255, 255, 255, 0.1);
     border: none;
     color: #fff;
-    font-size: 0.85em;
+    font-size: 1.2em;
+    line-height: 1;
     padding: 6px 10px;
     height: 48px;
+    width: 48px;
     margin-left: 16px;
     cursor: pointer;
     transition: background 0.2s, color 0.2s;
@@ -614,24 +614,119 @@ body {
     transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.compact-toggle.active {
-    box-shadow: 0 0 
-}
+/* --- COMPACT MODE STYLES (REVISED) --- */
 
-.compact-mode .header,
-.compact-mode .week-selector {
+/* 1. Main layout adjustments */
+body.compact-mode {
+    padding: 0;
+    overflow: hidden; /* Prevent body scroll */
+}
+body.compact-mode .container {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    max-width: 100%;
+    border-radius: 0;
+    padding: 0;
+    margin: 0;
+    border: none;
+    box-shadow: none;
+    background: transparent;
+}
+body.compact-mode .header {
     display: none !important;
 }
 
-.compact-mode .room,
-.compact-mode .teacher {
-    display: none !important;
+/* 2. Repurpose .week-selector as a sidebar */
+body.compact-mode .week-selector {
+    display: flex !important; /* Override original 'display: none' */
+    flex-direction: column;
+    flex: 0 0 90px; /* Sidebar width */
+    height: 100vh;
+    padding: 20px 10px;
+    border-right: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(25, 25, 25, 0.5);
+    justify-content: flex-start;
+    align-items: center;
+    border-bottom: none;
+}
+body.compact-mode .week-selector-flex {
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+    width: 100%;
 }
 
-.compact-mode .lesson-info-boxes {
-    display: none !important;
+/* 3. Re-enable and style controls inside the sidebar */
+body.compact-mode .lesson-info-boxes,
+body.compact-mode .lesson-box {
+    display: flex !important; /* Override original 'display: none' */
+}
+body.compact-mode .lesson-info-boxes {
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+}
+body.compact-mode .compact-toggle {
+    margin-left: 0; /* Remove horizontal margin */
+    order: 2; /* Put compact toggle button at the bottom */
+}
+body.compact-mode .next-lesson {
+    order: 1; /* Keep next lesson at top */
+    min-width: 70px;
+}
+body.compact-mode .lesson-name {
+    font-size: 0.85em;
 }
 
-.compact-mode .lesson-box {
+/* 4. Adjust the week slider for vertical layout */
+body.compact-mode .week-slider-container {
+    flex-direction: column;
+    width: 60px;
+    height: 120px;
+    padding: 6px;
+}
+body.compact-mode .week-btn {
+    min-width: auto;
+    width: 100%;
+    padding: 10px 0;
+    font-size: 1.2em;
+    font-weight: 700;
+}
+body.compact-mode .week-slider {
+    width: calc(100% - 12px);
+    height: calc(50% - 6px);
+    left: 6px;
+    top: 6px;
+}
+body.compact-mode .week-slider-container.week2 .week-slider {
+    left: 6px; /* Keep on left */
+    top: 50%; /* Move down for week 2 */
+}
+body.compact-mode .week-slider-container.stretching .week-slider {
+    transform: scaleY(1.1); /* Stretch vertically */
+}
+@keyframes bounceBackVertical {
+    0% { transform: scaleY(1.1); }
+    30% { transform: scaleY(0.95); }
+    60% { transform: scaleY(1.05); }
+    100% { transform: scaleY(1); }
+}
+body.compact-mode .week-slider-container.bouncing .week-slider {
+    animation: bounceBackVertical 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* 5. Make timetable container scrollable */
+body.compact-mode .timetable-container {
+    flex: 1; /* Take remaining space */
+    overflow-y: auto; /* Allow scrolling ONLY for the table */
+    height: 100vh;
+    padding: 20px;
+    min-height: auto;
+}
+
+/* 6. Hide teacher/room info as requested originally */
+body.compact-mode .room,
+body.compact-mode .teacher {
     display: none !important;
 }
