@@ -325,8 +325,13 @@ window.addEventListener('click', (event) => {
 // --- KEYBOARD SHORTCUT FOR BOOKS MODAL ---
 document.addEventListener('keydown', function(e) {
     if (e.key.toLowerCase() === 'b' && !e.repeat) {
-        const today = new Date();
-        displayBooksModal(today, 'Books for');
+        const booksModal = document.getElementById('booksModal');
+        if (booksModal.classList.contains('show')) {
+            booksModal.classList.remove('show');
+        } else {
+            const today = new Date();
+            displayBooksModal(today, 'Books for');
+        }
     }
 });
 
