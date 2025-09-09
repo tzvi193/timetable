@@ -20,10 +20,19 @@
         </div>
 
         <div class="week-selector">
-            <div class="week-slider-container week1" id="weekSlider">
-                <div class="week-slider"></div>
-                <button tabindex="-1" class="week-btn active" data-week="1">Week 1</button>
-                <button tabindex="-1" class="week-btn" data-week="2">Week 2</button>
+            <div class="week-selector-flex">
+                <div class="week-slider-container week1" id="weekSlider">
+                    <div class="week-slider"></div>
+                    <button tabindex="-1" class="week-btn active" data-week="1">Week 1</button>
+                    <button tabindex="-1" class="week-btn" data-week="2">Week 2</button>
+                </div>
+                <div class="lesson-info-boxes">
+                    <div class="lesson-box next-lesson">
+                        <div class="lesson-label">Next</div>
+                        <div class="lesson-name" id="nextLessonName">-</div>
+                        <div class="lesson-countdown" id="nextLessonCountdown">--:--</div>
+                    </div>
+                </div>
             </div>
         </div>
 

@@ -399,4 +399,60 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
+
+    function updateLessonInfoBoxes() {
+        const now = new Date();
+        const day = now.getDay();
+        const currentTime = now.toTimeString().slice(0, 5);
+        let nextPeriodIdx = null;
+        let nextStart = null;
+        let nextSubject = '-';
+
+        // Find next lesson index
+        for (let i = 0; i < lessonSchedule.length; i++) {
+            const period = lessonSchedule[i];
+            if (currentTime < period.start && nextPeriodIdx === null) {
+                nextPeriodIdx = i;
+                nextStart = period.start;
+            }
+        }
+
+        // Get subject name from timetable
+        function getSubjectName(weekId, periodIdx, dayIdx) {
+            if (periodIdx === null || dayIdx < 1 || dayIdx > 5) return '-';
+            const weekTable = document.getElementById(weekId)?.querySelector('.timetable');
+            if (!weekTable) return '-';
+            const rows = weekTable.querySelectorAll('tbody tr');
+            const rowMap = [0, 1, 2, 3, 4, 5, 7, 8, 9, 10];
+            const rowIdx = rowMap[periodIdx];
+            const cell = rows[rowIdx]?.cells[dayIdx];
+            if (!cell || !cell.classList.contains('lesson')) return '-';
+            const subjectDiv = cell.querySelector('.subject');
+            return subjectDiv ? subjectDiv.textContent.trim() : '-';
+        }
+
+        const activeWeekId = localStorage.getItem('activeWeek') || 'week1';
+        // Monday=1, ..., Friday=5
+        const dayIdx = (day >= 1 && day <= 5) ? day : 1;
+        nextSubject = getSubjectName(activeWeekId, nextPeriodIdx, dayIdx);
+
+        // Countdown logic
+        function getCountdown(targetTime) {
+            if (!targetTime) return '--:--';
+            const [h, m] = targetTime.split(':').map(Number);
+            const target = new Date(now);
+            target.setHours(h, m, 0, 0);
+            let diff = Math.floor((target - now) / 1000);
+            if (diff < 0) diff = 0;
+            const min = Math.floor(diff / 60);
+            const sec = diff % 60;
+            return `${min.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
+        }
+        document.getElementById('nextLessonName').textContent = nextSubject;
+        document.getElementById('nextLessonCountdown').textContent = getCountdown(nextStart);
+    }
+
+    // Call on load and every second
+    setInterval(updateLessonInfoBoxes, 1000);
+    document.addEventListener('DOMContentLoaded', updateLessonInfoBoxes);
 });
