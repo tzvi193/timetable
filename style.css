@@ -9,7 +9,7 @@ body {
     font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
     background: #121212;
     background-image: radial-gradient(circle at 1% 1%, hsla(211, 47%, 26%, 1) 0%, transparent 50%),
-                      radial-gradient(circle at 99% 99%, hsla(303, 56%, 22%, 1) 0%, transparent 50%);
+        radial-gradient(circle at 99% 99%, hsla(303, 56%, 22%, 1) 0%, transparent 50%);
     min-height: 100vh;
     padding: 30px;
     color: #e0e0e0;
@@ -37,9 +37,21 @@ body {
     text-align: center;
     border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
-.header h1 { font-size: 2.8em; margin-bottom: 10px; font-weight: 700; }
-.header h2 { font-size: 1.2em; color: #c0c0c0; font-weight: 300; }
 
+.header h1 {
+    font-size: 2.8em;
+    margin-bottom: 10px;
+    font-weight: 600;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.header h2 {
+    font-size: 1.2em;
+    color: #c0c0c0;
+    font-weight: 300;
+}
+
+/* --- WEEK SELECTOR & BOUNCY TOGGLE --- */
 /* --- WEEK SELECTOR & BOUNCY TOGGLE --- */
 .week-selector {
     display: flex;
@@ -48,46 +60,160 @@ body {
     background: rgba(20, 20, 20, 0.1);
     border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
+
 .week-slider-container {
     position: relative;
     display: flex;
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 999px;
-    padding: 5px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 50px;
+    padding: 6px;
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.3),
+        inset 0 2px 4px rgba(255, 255, 255, 0.1);
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    cursor: pointer;
+    overflow: hidden;
     width: 320px;
-    height: 54px;
-    align-items: center;
 }
-.week-slider {
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    height: calc(100% - 10px);
-    width: calc(50% - 5px);
-    background-color: #0077ff;
-    border-radius: 999px;
-    z-index: 0;
-    box-shadow: 0 4px 15px rgba(0, 119, 255, 0.3);
-    transition: left 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
-    pointer-events: none;
-    will-change: left;
+
+.week-slider-container:hover {
+    transform: scale(1.05);
+    box-shadow:
+        0 15px 40px rgba(0, 0, 0, 0.4),
+        inset 0 2px 4px rgba(255, 255, 255, 0.15),
+        0 0 0 2px rgba(0, 119, 255, 0.3);
 }
+
 .week-btn {
     position: relative;
-    z-index: 1;
-    flex: 1 1 50%;
-    background: transparent;
-    color: #e0e0e0;
-    border: none;
-    border-radius: 999px;
-    font-size: 1.1em;
+    padding: 12px 24px;
     font-weight: 600;
-    padding: 12px 0;
+    font-size: 14px;
+    border-radius: 44px;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 2;
+    color: #888;
+    user-select: none;
+    min-width: 140px;
+    text-align: center;
+    background: transparent;
+    border: none;
     cursor: pointer;
-    transition: color 0.3s ease;
+    flex: 1;
+    outline: none;
 }
-.week-btn.active { color: #fff; }
-button:focus { outline: none; box-shadow: none; }
+
+.week-btn.active {
+    color: white;
+    transform: scale(1.02);
+}
+
+.week-btn:hover:not(.active) {
+    color: #bbb;
+    transform: scale(1.05);
+}
+
+.week-slider {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    width: calc(50% - 6px);
+    height: calc(100% - 12px);
+    background: linear-gradient(135deg, #0077ff, #005ce6);
+    border-radius: 44px;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 1;
+    box-shadow:
+        0 4px 12px rgba(0, 119, 255, 0.4),
+        inset 0 1px 2px rgba(255, 255, 255, 0.3);
+}
+
+.week-slider::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent);
+    border-radius: 44px;
+    transition: all 0.3s ease;
+}
+
+.week-slider-container:hover .week-slider::before {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), transparent);
+}
+
+/* Active state for second option */
+.week-slider-container.week2 .week-slider {
+    left: calc(50%);
+}
+
+/* Stretch animation on click */
+.week-slider-container.stretching .week-slider {
+    transform: scaleX(1.1);
+    transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Bounce back animation */
+.week-slider-container.bouncing .week-slider {
+    animation: bounceBack 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes bounceBack {
+    0% {
+        transform: scaleX(1.1);
+    }
+
+    30% {
+        transform: scaleX(0.95);
+    }
+
+    60% {
+        transform: scaleX(1.05);
+    }
+
+    100% {
+        transform: scaleX(1);
+    }
+}
+
+/* Ripple effect */
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(0);
+    animation: ripple-animation 0.6s linear;
+    pointer-events: none;
+}
+
+@keyframes ripple-animation {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+/* Glow effect on active */
+.week-slider-container.week1 .week-slider,
+.week-slider-container.week2 .week-slider {
+    animation: glow-blue 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow-blue {
+    from {
+        box-shadow:
+            0 4px 12px rgba(0, 119, 255, 0.4),
+            inset 0 1px 2px rgba(255, 255, 255, 0.3);
+    }
+
+    to {
+        box-shadow:
+            0 6px 20px rgba(0, 119, 255, 0.6),
+            inset 0 1px 2px rgba(255, 255, 255, 0.3);
+    }
+}
 
 /* --- TIMETABLE & ANIMATIONS --- */
 .timetable-container {
@@ -95,10 +221,39 @@ button:focus { outline: none; box-shadow: none; }
     position: relative;
     min-height: 500px;
 }
-.week-content.fade-in-up { animation: fadeInUp 0.35s ease-out forwards; }
-.week-content.fade-out-down { animation: fadeOutDown 0.35s ease-out forwards; }
-@keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes fadeOutDown { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(20px); visibility: hidden; } }
+
+.week-content.fade-in-up {
+    animation: fadeInUp 0.35s ease-out forwards;
+}
+
+.week-content.fade-out-down {
+    animation: fadeOutDown 0.35s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOutDown {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(20px);
+        visibility: hidden;
+    }
+}
 
 .timetable {
     width: 100%;
@@ -109,46 +264,137 @@ button:focus { outline: none; box-shadow: none; }
     overflow: hidden;
     table-layout: fixed;
 }
-.timetable th, .timetable td { padding: 14px 12px; text-align: center; border: 1px solid rgba(255, 255, 255, 0.08); border-top-width: 0; border-left-width: 0; vertical-align: top; transition: background-color 0.3s ease; }
-.timetable th:first-child, .timetable td:first-child { border-left-width: 1px; }
-.timetable tr:first-child th { border-top-width: 1px; }
-.timetable th { background: rgba(26, 26, 26, 0.4); color: #ffffff; padding: 18px 12px; font-weight: 600; font-size: 1em; text-transform: uppercase; letter-spacing: 1px; }
-.timetable thead tr:first-child th:first-child { border-top-left-radius: 8px; }
-.timetable thead tr:first-child th:last-child { border-top-right-radius: 8px; }
-.timetable tbody tr:last-child td:first-child { border-bottom-left-radius: 8px; }
-.timetable tbody tr:last-child td:last-child { border-bottom-right-radius: 8px; }
-.timetable th.day-header { cursor: pointer; transition: background-color 0.3s ease, transform 0.2s ease; }
-.timetable th.day-header:hover { background: rgba(50, 50, 50, 0.6); transform: translateY(-2px); }
-.timetable tbody tr:hover td { background: rgba(255, 255, 255, 0.05); }
 
-.period-time { background: rgba(26, 26, 26, 0.4); color: #ffffff; font-weight: 600; font-size: 0.9em; }
-.subject { font-weight: 600; color: #ffffff; margin-bottom: 5px; }
-.teacher { color: #b0b0b0; font-size: 0.85em; font-weight: 300; }
-.room { color: #79c0ff; font-size: 0.8em; font-weight: 500; }
-.break, .registration { background: rgba(60, 60, 60, 0.3); color: #ffffff; font-weight: 600; }
-.empty { background: rgba(34, 34, 34, 0.15); color: #666666; font-style: italic; }
+.timetable th,
+.timetable td {
+    padding: 14px 12px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-top-width: 0;
+    border-left-width: 0;
+    vertical-align: top;
+    transition: background-color 0.3s ease;
+}
+
+.timetable th:first-child,
+.timetable td:first-child {
+    border-left-width: 1px;
+}
+
+.timetable tr:first-child th {
+    border-top-width: 1px;
+}
+
+.timetable th {
+    background: rgba(26, 26, 26, 0.4);
+    color: #ffffff;
+    padding: 18px 12px;
+    font-weight: 600;
+    font-size: 1em;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.timetable thead tr:first-child th:first-child {
+    border-top-left-radius: 8px;
+}
+
+.timetable thead tr:first-child th:last-child {
+    border-top-right-radius: 8px;
+}
+
+.timetable tbody tr:last-child td:first-child {
+    border-bottom-left-radius: 8px;
+}
+
+.timetable tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 8px;
+}
+
+.timetable th.day-header {
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.timetable th.day-header:hover {
+    background: rgba(50, 50, 50, 0.6);
+    transform: translateY(-2px);
+}
+
+.timetable tbody tr:hover td {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.period-time {
+    background: rgba(26, 26, 26, 0.4);
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 0.9em;
+}
+
+.subject {
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 5px;
+}
+
+.teacher {
+    color: #b0b0b0;
+    font-size: 0.85em;
+    font-weight: 300;
+}
+
+.room {
+    color: #79c0ff;
+    font-size: 0.8em;
+    font-weight: 500;
+}
+
+.break,
+.registration {
+    background: rgba(60, 60, 60, 0.3);
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.empty {
+    background: rgba(34, 34, 34, 0.15);
+    color: #666666;
+    font-style: italic;
+}
 
 /* --- HIGHLIGHTING STYLES --- */
-.highlight-current { outline: 2px solid #1fdd12; outline-offset: -2px; box-shadow: 0 0 12px rgba(31, 221, 18, 0.4); }
-.highlight-next { outline: 2px solid #006ddb; outline-offset: -2px; box-shadow: 0 0 12px rgba(0, 109, 219, 0.4); }
+.highlight-current {
+    outline: 2px solid #1fdd12;
+    outline-offset: -2px;
+    box-shadow: 0 0 12px rgba(31, 221, 18, 0.4);
+}
+
+.highlight-next {
+    outline: 2px solid #006ddb;
+    outline-offset: -2px;
+    box-shadow: 0 0 12px rgba(0, 109, 219, 0.4);
+}
 
 /* --- MODAL (POPUP) STYLES --- */
 /* The full-screen overlay */
 /* --- MODAL (POPUP) STYLES --- */
 /* The full-screen overlay */
 .modal {
-    position: fixed; /* Lock to viewport */
+    position: fixed;
+    /* Lock to viewport */
     z-index: 1000;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);  
+    background-color: rgba(0, 0, 0, 0.7);
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
     transition: opacity 0.3s ease, visibility 0.3s ease;
 }
+
 .modal.show {
     opacity: 1;
     visibility: visible;
@@ -158,7 +404,7 @@ button:focus { outline: none; box-shadow: none; }
 /* The actual popup box */
 .modal-content {
     position: fixed;
-    top: calc(50vh - 225px);
+    top: calc(50vh - 250px);
     left: calc(50vw - 250px);
     /* Animation */
     opacity: 0;
@@ -172,7 +418,7 @@ button:focus { outline: none; box-shadow: none; }
     padding: 35px;
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 12px;
-    height: 450px;
+    height: 500px;
     width: 500px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
     color: #e0e0e0;
@@ -184,19 +430,78 @@ button:focus { outline: none; box-shadow: none; }
     transform: scale(1);
 }
 
-.modal-content h3 { text-align: center; margin-bottom: 25px; font-size: 1.8em; color: #ffffff; font-weight: 600; }
-.modal-content ul { list-style-type: none; padding: 0; margin-bottom: 20px; }
-.modal-content ul li { background: rgba(30, 30, 30, 0.4); margin-bottom: 10px; padding: 15px; border-radius: 6px; font-size: 1.1em; border: 1px solid rgba(255, 255, 255, 0.1); }
-.close-button { color: #aaa; position: absolute; top: 15px; right: 25px; font-size: 35px; font-weight: bold; cursor: pointer; transition: color 0.3s, transform 0.3s; }
-.close-button:hover, .close-button:focus { color: #fff; transform: rotate(90deg); }
-#noBooksMessage { text-align: center; font-style: italic; color: #b0b0b0; margin-top: 15px; }
+.modal-content h3 {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 1.8em;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.modal-content ul {
+    list-style-type: none;
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+.modal-content ul li {
+    background: rgba(30, 30, 30, 0.4);
+    margin-bottom: 10px;
+    padding: 15px;
+    border-radius: 6px;
+    font-size: 1.1em;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.close-button {
+    color: #aaa;
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    font-size: 35px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s, transform 0.3s;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: #fff;
+    transform: rotate(90deg);
+}
+
+#noBooksMessage {
+    text-align: center;
+    font-style: italic;
+    color: #b0b0b0;
+    margin-top: 15px;
+}
 
 /* --- RESPONSIVE DESIGN --- */
 @media (max-width: 768px) {
-    body { padding: 15px; }
-    .timetable { font-size: 0.8em; }
-    .timetable th, .timetable td { padding: 10px 6px; }
-    .header h1 { font-size: 2em; }
-    .modal-content { width: 95%; padding: 25px; }
-    .modal-content h3 { font-size: 1.5em; }
+    body {
+        padding: 15px;
+    }
+
+    .timetable {
+        font-size: 0.8em;
+    }
+
+    .timetable th,
+    .timetable td {
+        padding: 10px 6px;
+    }
+
+    .header h1 {
+        font-size: 2em;
+    }
+
+    .modal-content {
+        width: 95%;
+        padding: 25px;
+    }
+
+    .modal-content h3 {
+        font-size: 1.5em;
+    }
 }

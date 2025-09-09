@@ -11,62 +11,61 @@ onkeypress = function(e) {
  * NEW: Updated showWeek function with animations
  */
 function showWeek(weekId) {
-    const animationDuration = 300; // ms, should be slightly less than CSS animation time
+    const animationDuration = 300;
     const newWeek = document.getElementById(weekId);
     if (!newWeek) return;
 
-    // Find the currently visible week
     const currentWeek = document.querySelector('.week-content:not([style*="display: none"])');
+    const slider = document.getElementById('weekSlider');
     
-    // Animate slider
-    const slider = document.querySelector('.week-slider');
-    const container = document.querySelector('.week-slider-container');
-    if (slider && container) {
-        const containerWidth = container.offsetWidth;
-        const buttonWidth = newWeek.offsetWidth / 2; // Simple approximation
-        const padding = 5; // As per new CSS
-        slider.style.width = `calc(50% - ${padding}px)`;
-        slider.style.left = (weekId === 'week1' ? padding + 'px' : `calc(50%)`);
+    // Safety check - if slider doesn't exist yet, skip animations
+    if (slider) {
+        // Add stretch animation
+        slider.classList.add('stretching');
+        
+        setTimeout(() => {
+            // Remove stretch and add bounce
+            slider.classList.remove('stretching');
+            slider.classList.add('bouncing');
+            
+            // Update slider state
+            slider.classList.remove('week1', 'week2');
+            slider.classList.add(weekId === 'week1' ? 'week1' : 'week2');
+            
+            // Update buttons
+            const buttons = slider.querySelectorAll('.week-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.week === (weekId === 'week1' ? '1' : '2')) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            setTimeout(() => {
+                slider.classList.remove('bouncing');
+            }, 600);
+        }, 150);
     }
 
-    // Update buttons
-    const buttons = document.querySelectorAll('.week-btn');
-    buttons.forEach(btn => btn.classList.remove('active'));
-    document.querySelector(`.week-btn[onclick="showWeek('${weekId}')"]`)?.classList.add('active');
-
-    // Handle the timetable animation
+    // Handle the timetable animation (keep your existing logic)
     if (currentWeek && currentWeek.id !== weekId) {
-        // 1. Fade out the current week
         currentWeek.classList.add('fade-out-down');
-
-        // 2. After the fade-out animation, hide it and show the new one
         setTimeout(() => {
             currentWeek.style.display = 'none';
             currentWeek.classList.remove('fade-out-down');
-
-            // 3. Prepare and fade in the new week
             newWeek.style.display = 'block';
             newWeek.classList.add('fade-in-up');
-            
-            // 4. Clean up the fade-in class
             setTimeout(() => {
                 newWeek.classList.remove('fade-in-up');
             }, animationDuration);
-
         }, animationDuration);
     } else if (!currentWeek) {
-        // If no week is visible (on initial load), just show the target week
         newWeek.style.display = 'block';
     }
 
-    // Save the active week to localStorage
     localStorage.setItem('activeWeek', weekId);
-
-    // Re-run the highlight function when switching weeks
     updateLessonHighlight();
 }
-
-
 // --- DYNAMIC HIGHLIGHTING SCRIPT ---
 
 // IMPORTANT: Adjust these times to match your actual school schedule
@@ -315,11 +314,19 @@ closeButton.addEventListener('click', () => {
     booksModal.classList.remove('show'); 
 });
 
-
 // Close the modal if user clicks outside of it
 window.addEventListener('click', (event) => {
     if (event.target == booksModal) {
         booksModal.classList.remove('show'); 
+    }
+});
+
+
+// --- KEYBOARD SHORTCUT FOR BOOKS MODAL ---
+document.addEventListener('keydown', function(e) {
+    if (e.key.toLowerCase() === 'b' && !e.repeat) {
+        const today = new Date();
+        displayBooksModal(today, 'Books for');
     }
 });
 
@@ -359,5 +366,37 @@ document.addEventListener('DOMContentLoaded', () => {
             
             displayBooksModal(dummyDateForClickedDay, "Books for");
         });
+    });
+
+    // Add this inside your DOMContentLoaded event listener, after the existing code:
+
+    // Add click listeners for bouncy slider
+    const weekSlider = document.getElementById('weekSlider');
+    const weekButtons = weekSlider.querySelectorAll('.week-btn');
+
+    weekButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            const weekNumber = parseInt(button.dataset.week);
+            const weekId = `week${weekNumber}`;
+            if (!button.classList.contains('active')) {
+                showWeek(weekId);
+            }
+        });
+    });
+
+    // Also allow clicking on the slider background
+    weekSlider.addEventListener('click', (e) => {
+        if (e.target === weekSlider || e.target.classList.contains('week-slider')) {
+            const rect = weekSlider.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const sliderWidth = rect.width;
+            const weekNumber = clickX < sliderWidth / 2 ? 1 : 2;
+            const weekId = `week${weekNumber}`;
+            
+            const targetButton = document.querySelector(`[data-week="${weekNumber}"]`);
+            if (!targetButton.classList.contains('active')) {
+                showWeek(weekId);
+            }
+        }
     });
 });

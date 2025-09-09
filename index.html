@@ -7,6 +7,9 @@
     <title>Timetable</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="ChatGPT Image Jul 11, 2025, 04_06_55 PM-modified.ico" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -17,10 +20,10 @@
         </div>
 
         <div class="week-selector">
-            <div class="week-slider-container">
+            <div class="week-slider-container week1" id="weekSlider">
                 <div class="week-slider"></div>
-                <button class="week-btn active" onclick="showWeek('week1')">Week 1</button>
-                <button class="week-btn" onclick="showWeek('week2')">Week 2</button>
+                <button tabindex="-1" class="week-btn active" data-week="1">Week 1</button>
+                <button tabindex="-1" class="week-btn" data-week="2">Week 2</button>
             </div>
         </div>
 
