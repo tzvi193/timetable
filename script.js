@@ -351,6 +351,29 @@ document.addEventListener('DOMContentLoaded', () => {
     updateLessonHighlight();
     setInterval(updateLessonHighlight, 60000); // 60000 ms = 1 minute
 
+    // --- COMPACT MODE LOGIC ---
+    const compactToggle = document.getElementById('compactToggle');
+    function setCompactMode(enabled) {
+        document.body.classList.toggle('compact-mode', enabled);
+        if (compactToggle) {
+            compactToggle.classList.toggle('active', enabled);
+            compactToggle.textContent = enabled ? 'Exit Compact' : 'Compact Mode';
+        }
+    }
+    let compactActive = false;
+    if (compactToggle) {
+        compactToggle.addEventListener('click', () => {
+            compactActive = !compactActive;
+            setCompactMode(compactActive);
+        });
+    }
+    document.addEventListener('keydown', function(e) {
+        if (e.key.toLowerCase() === 'f' && !e.repeat) {
+            compactActive = !compactActive;
+            setCompactMode(compactActive);
+        }
+    });
+
     // Add click listeners to all day headers in the timetable
     const dayHeaders = document.querySelectorAll('.timetable th.day-header');
     
