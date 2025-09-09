@@ -502,7 +502,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return `${min.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
         }
         document.getElementById('nextLessonName').textContent = nextSubject;
-        document.getElementById('nextLessonCountdown').textContent = getCountdown(nextStart);
+        document.getElementById('nextLessonCountdown').textContent = "In: " + getCountdown(nextStart);
     }
 
     // Call on load and every second
