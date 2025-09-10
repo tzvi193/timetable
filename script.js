@@ -70,24 +70,20 @@ function showWeek(weekId) {
 
 // IMPORTANT: Adjust these times to match your actual school schedule
 const lessonSchedule = [
-    { name: "Registration", start: "08:35", end: "09:00" }, // Period Row 0
-    { name: "Period 1",     start: "09:00", end: "09:45" }, // Period Row 1
-    { name: "Period 2",     start: "09:45", end: "10:30" }, // Period Row 2
-    { name: "Period 3",     start: "10:30", end: "11:15" }, // Period Row 3
-    // break time here but not on timetable
-    { name: "Period 4",     start: "11:35", end: "12:20" }, // Period Row 4
-    { name: "Period 5a",    start: "12:20", end: "13:05" }, // Period Row 5
-    // Mincha is a break time but treated as a period
-    { name: "Mincha",       start: "13:50", end: "14:05" }, // Period Row 7
-    { name: "Period 6",     start: "14:05", end: "14:50" }, // Period Row 8
-    { name: "Period 7",     start: "14:50", end: "15:35" }, // Period Row 9
-    { name: "Period 8",     start: "15:35", end: "16:25" }  // Period Row 10
+    { name: "Period 1",     start: "09:00", end: "09:45" }, // Row 0
+    { name: "Period 2",     start: "09:45", end: "10:30" }, // Row 1
+    { name: "Period 3",     start: "10:30", end: "11:15" }, // Row 2
+    { name: "Period 4",     start: "11:35", end: "12:20" }, // Row 3
+    { name: "Period 5a",    start: "12:20", end: "13:05" }, // Row 4
+    { name: "Lunch",        start: "13:05", end: "13:50" }, // Row 5
+    { name: "Mincha",       start: "13:50", end: "14:05" }, // Row 6
+    { name: "Period 6",     start: "14:05", end: "14:50" }, // Row 7
+    { name: "Period 7",     start: "14:50", end: "15:35" }, // Row 8
+    { name: "Period 8",     start: "15:35", end: "16:25" }  // Row 9
 ];
 
-// This maps a schedule index to the actual row index in the HTML table
-// (e.g., schedule entry 0 is HTML row 0, schedule entry 3 is HTML row 3, 
-// schedule entry 4 (Period 4) is HTML row 4, etc. - accounting for break rows)
-const scheduleRowMap = [0, 1, 2, 3, 4, 5, 7, 8, 9, 10]; 
+// Direct mapping: schedule index = table row index
+const scheduleRowMap = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 function updateLessonHighlight() {
     const now = new Date();
@@ -147,20 +143,20 @@ function updateLessonHighlight() {
     if (activeTable) {
         const rows = activeTable.querySelectorAll('tbody tr');
         
-        // Highlight CURRENT lesson
+        // Highlight CURRENT lesson/break
         if (currentPeriod) {
             const rowIndex = scheduleRowMap[currentPeriod.periodIndex];
             const cell = rows[rowIndex]?.cells[currentPeriod.day];
-            if (cell && cell.classList.contains('lesson')) {
+            if (cell && (cell.classList.contains('lesson') || cell.classList.contains('break'))) {
                 cell.classList.add('highlight-current');
             }
         }
 
-        // Highlight NEXT lesson
+        // Highlight NEXT lesson/break
         if (nextPeriod) {
             const rowIndex = scheduleRowMap[nextPeriod.periodIndex];
             const cell = rows[rowIndex]?.cells[nextPeriod.day];
-            if (cell && cell.classList.contains('lesson')) {
+            if (cell && (cell.classList.contains('lesson') || cell.classList.contains('break'))) {
                 cell.classList.add('highlight-next');
             }
         }
@@ -431,33 +427,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const currentTime = now.toTimeString().slice(0, 5);
         let nextPeriodIdx = null;
         let nextStart = null;
-        let nextSubject = '-';
+        let nextName = '-';
 
+        // Find next period (lesson or break)
         for (let i = 0; i < lessonSchedule.length; i++) {
             const period = lessonSchedule[i];
             if (currentTime < period.start && nextPeriodIdx === null) {
                 nextPeriodIdx = i;
                 nextStart = period.start;
+                nextName = period.name;
             }
         }
 
-        function getSubjectName(weekId, periodIdx, dayIdx) {
-            if (periodIdx === null || dayIdx < 1 || dayIdx > 5) return '-';
-            const weekTable = document.getElementById(weekId)?.querySelector('.timetable');
-            if (!weekTable) return '-';
-            const rows = weekTable.querySelectorAll('tbody tr');
-            const rowMap = [0, 1, 2, 3, 4, 5, 7, 8, 9, 10];
-            const rowIdx = rowMap[periodIdx];
-            const cell = rows[rowIdx]?.cells[dayIdx];
-            if (!cell || !cell.classList.contains('lesson')) return '-';
-            const subjectDiv = cell.querySelector('.subject');
-            return subjectDiv ? subjectDiv.textContent.trim() : '-';
-        }
-
-        const activeWeekId = localStorage.getItem('activeWeek') || 'week1';
-        const dayIdx = (day >= 1 && day <= 5) ? day : 1;
-        nextSubject = getSubjectName(activeWeekId, nextPeriodIdx, dayIdx);
-
+        document.getElementById('nextLessonName').textContent = nextName;
         function getCountdown(targetTime) {
             if (!targetTime) return '--:--';
             const [h, m] = targetTime.split(':').map(Number);
@@ -469,7 +451,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const sec = diff % 60;
             return `${min.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
         }
-        document.getElementById('nextLessonName').textContent = nextSubject;
         document.getElementById('nextLessonCountdown').textContent = "In: " + getCountdown(nextStart);
     }
 
