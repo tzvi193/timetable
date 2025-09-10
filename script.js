@@ -170,23 +170,24 @@ function updateLessonHighlight() {
 
 // --- BOOK REQUIREMENTS DATA ---
 const subjectBookMap = {
-    "Chemistry": ["Chemistry Notebook"],
-    "Mathematics": ["Maths Notebook"],
-    "English": ["English Notebook", "An Inspector Calls text"],
-    "Modern Hebrew": ["Mh Book"],
+    "Chemistry": ["🟡 Chemistry Notebook"],
+    "Mathematics": ["🔵 Maths Notebook"],
+    "English": ["🔵 English Notebook", "🟤 An Inspector Calls text"],
+    "Modern Hebrew": ["🟠 Mh text"],
     "Computing": [],
-    "Biology": ["Laptop"],
-    "Physics": ["Laptop"],
-    "P.E.": ["PE Kit"], 
+    "Biology": ["⚫ Laptop", "🟢 Biology Notebook"],
+    "Physics": ["⚫ Laptop", "🔵 Physics Notebook"],
+    "P.E.": ["🟣 PE Kit"], 
     "Gemoro": [],
-    "Geography": ["Laptop"], 
-    "Biblical Hebrew": ["Josephs Rise To Power text"],
+    "Geography": ["⚫ Laptop"], 
+    "Biblical Hebrew": ["⚪ Josephs Rise To Power text"],
     "Chumash": [],
     "Mincha": [],
 };
 
+// ================== JAVASCRIPT REVERT START ==================
 /**
- * Retrieves the books needed for a specific day.
+ * Retrieves the books needed for a specific day. (Original simple version)
  * If the target day is a weekend, it will automatically shift to the next Monday.
  * @param {Date} targetDate The date for which to get books.
  * @returns {object} An object containing 'books' (array) and 'message' (string),
@@ -219,36 +220,26 @@ function getBooksForDay(targetDate) {
         return { message: "Timetable not found for the active week." };
     }
 
-    // dayColumnIndex directly maps to table column index (Monday is 1, Tuesday is 2, etc.)
-    const dayColumnIndex = targetDayIndex; 
-
+    const dayColumnIndex = targetDayIndex;
     const rows = activeTable.querySelectorAll('tbody tr');
 
     rows.forEach(row => {
-        const dayCell = row.cells[dayColumnIndex]; 
-
+        const dayCell = row.cells[dayColumnIndex];
         if (dayCell && dayCell.classList.contains('lesson')) {
             hasLessons = true;
             const subjectElement = dayCell.querySelector('.subject');
-
             if (subjectElement) {
                 let subject = subjectElement.textContent.trim();
-                
-                // Handle the typo "Bioligy" from HTML to "Biology" for lookup
-                if (subject === "Bioligy") {
-                    subject = "Biology"; 
-                }
+                if (subject === "Bioligy") subject = "Biology";
 
                 if (subjectBookMap[subject]) {
                     subjectBookMap[subject].forEach(item => booksNeeded.add(item));
-                } else {
-                    console.warn(`No specific book mapping for subject: "${subject}". Consider adding it to subjectBookMap.`);
                 }
             }
         }
     });
 
-    if (!hasLessons && !message) { 
+    if (!hasLessons && !message) {
         message = "No lessons scheduled for this day.";
     } else if (booksNeeded.size === 0 && !message) {
         message = "All lessons this day require no specific books.";
@@ -259,7 +250,7 @@ function getBooksForDay(targetDate) {
     return { 
         books: sortedBooks, 
         message: message, 
-        effectiveDayName: dayNames[effectiveDate.getDay()] // Name of the day books were actually retrieved for
+        effectiveDayName: dayNames[effectiveDate.getDay()]
     };
 }
 
@@ -272,23 +263,21 @@ const noBooksMessage = document.getElementById('noBooksMessage');
 const booksModalTitle = document.getElementById('booksModalTitle');
 
 /**
- * Populates and displays the books modal for a given date.
+ * Populates and displays the books modal. (Original simple version)
  * @param {Date} dateToDisplay The date object for which books are requested.
  * @param {string} titlePrefix Prefix for the modal title (e.g., "Books for").
  */
 function displayBooksModal(dateToDisplay, titlePrefix) {
     const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-    
     const bookData = getBooksForDay(dateToDisplay);
     
-    // Adjust modal title based on whether the day was shifted (e.g., weekend to Monday)
     if (bookData.effectiveDayName && bookData.effectiveDayName !== dayNames[dateToDisplay.getDay()]) {
         booksModalTitle.textContent = `${titlePrefix} ${dayNames[dateToDisplay.getDay()]} (Showing ${bookData.effectiveDayName}'s Books)`;
     } else {
         booksModalTitle.textContent = `${titlePrefix} ${dayNames[dateToDisplay.getDay()]}`;
     }
 
-    booksList.innerHTML = ''; // Clear previous list
+    booksList.innerHTML = '';
     noBooksMessage.style.display = 'none';
 
     if (bookData.books && bookData.books.length > 0) {
@@ -305,14 +294,15 @@ function displayBooksModal(dateToDisplay, titlePrefix) {
         noBooksMessage.style.display = 'block';
     }
 
-    booksModal.classList.add('show'); 
+    booksModal.classList.add('show');
 }
+// ================== JAVASCRIPT REVERT END ==================
+
 
 closeButton.addEventListener('click', () => {
     booksModal.classList.remove('show'); 
 });
 
-// Close the modal if user clicks outside of it
 window.addEventListener('click', (event) => {
     if (event.target == booksModal) {
         booksModal.classList.remove('show'); 
@@ -336,50 +326,42 @@ document.addEventListener('keydown', function(e) {
 
 // --- DOMContentLoaded: Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Load the active week from localStorage or default to 'week1'
     const savedWeek = localStorage.getItem('activeWeek');
     if (savedWeek) {
         showWeek(savedWeek);
     } else {
-        showWeek('week1'); // Default to Week 1 if no saved preference
+        showWeek('week1');
     }
 
-    // Animate slider on window resize (to keep position correct)
     window.addEventListener('resize', () => {
         const activeWeek = localStorage.getItem('activeWeek') || 'week1';
         showWeek(activeWeek);
     });
 
-    // Now that the correct week is displayed, update highlights
     updateLessonHighlight();
-    setInterval(updateLessonHighlight, 60000); // 60000 ms = 1 minute
+    setInterval(updateLessonHighlight, 60000);
 
-    // --- COMPACT MODE LOGIC (REVISED) ---
     const compactToggle = document.getElementById('compactToggle');
-    let compactActive = false; // Keep track of state
+    let compactActive = false;
 
     function setCompactMode(enabled) {
         document.body.classList.toggle('compact-mode', enabled);
         
-        // Update week button text
         const weekButtons = document.querySelectorAll('.week-btn');
         weekButtons.forEach(btn => {
             const weekNum = btn.dataset.week;
             btn.textContent = enabled ? weekNum : `Week ${weekNum}`;
         });
 
-        // Update compact toggle button appearance
         if (compactToggle) {
             compactToggle.classList.toggle('active', enabled);
             compactToggle.title = enabled ? "Exit compact mode (F)" : "Toggle compact mode (F)";
-            compactToggle.innerHTML = enabled ? '&#x2715;' : '⛶'; // "✕" vs "⛶"
+            compactToggle.innerHTML = enabled ? '&#x2715;' : '⛶';
         }
         
-        // Store the state
         localStorage.setItem('compactMode', enabled);
     }
 
-    // Event listeners for compact mode
     if (compactToggle) {
         compactToggle.addEventListener('click', () => {
             compactActive = !compactActive;
@@ -393,35 +375,28 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Initialize compact mode from localStorage
     const savedCompactState = localStorage.getItem('compactMode') === 'true';
     if (savedCompactState) {
         compactActive = true;
         setCompactMode(true);
     } else {
         compactActive = false;
-        setCompactMode(false); // Ensure default state is applied correctly
+        setCompactMode(false);
     }
-    // --- END REVISED COMPACT MODE LOGIC ---
 
-    // Add click listeners to all day headers in the timetable
     const dayHeaders = document.querySelectorAll('.timetable th.day-header');
     
     dayHeaders.forEach(header => {
         header.addEventListener('click', function() {
-            const clickedColumnIndex = this.cellIndex; // 1 for Monday, 2 for Tuesday, etc.
-
+            const clickedColumnIndex = this.cellIndex;
             const today = new Date();
-            const currentDayOfWeek = today.getDay(); // 0 for Sunday, 1 for Monday, etc.
-
+            const currentDayOfWeek = today.getDay();
             let dummyDateForClickedDay = new Date(today);
             dummyDateForClickedDay.setDate(today.getDate() + (clickedColumnIndex - currentDayOfWeek));
-            
             displayBooksModal(dummyDateForClickedDay, "Books for");
         });
     });
 
-    // Add click listeners for bouncy slider
     const weekSlider = document.getElementById('weekSlider');
     const weekButtons = weekSlider.querySelectorAll('.week-btn');
 
@@ -435,7 +410,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Also allow clicking on the slider background
     weekSlider.addEventListener('click', (e) => {
         if (e.target === weekSlider || e.target.classList.contains('week-slider')) {
             const rect = weekSlider.getBoundingClientRect();
@@ -459,7 +433,6 @@ document.addEventListener('DOMContentLoaded', () => {
         let nextStart = null;
         let nextSubject = '-';
 
-        // Find next lesson index
         for (let i = 0; i < lessonSchedule.length; i++) {
             const period = lessonSchedule[i];
             if (currentTime < period.start && nextPeriodIdx === null) {
@@ -468,7 +441,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Get subject name from timetable
         function getSubjectName(weekId, periodIdx, dayIdx) {
             if (periodIdx === null || dayIdx < 1 || dayIdx > 5) return '-';
             const weekTable = document.getElementById(weekId)?.querySelector('.timetable');
@@ -483,11 +455,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const activeWeekId = localStorage.getItem('activeWeek') || 'week1';
-        // Monday=1, ..., Friday=5
         const dayIdx = (day >= 1 && day <= 5) ? day : 1;
         nextSubject = getSubjectName(activeWeekId, nextPeriodIdx, dayIdx);
 
-        // Countdown logic
         function getCountdown(targetTime) {
             if (!targetTime) return '--:--';
             const [h, m] = targetTime.split(':').map(Number);
@@ -503,7 +473,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('nextLessonCountdown').textContent = "In: " + getCountdown(nextStart);
     }
 
-    // Call on load and every second
     updateLessonInfoBoxes();
     setInterval(updateLessonInfoBoxes, 1000);
 });
