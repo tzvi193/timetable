@@ -74,7 +74,7 @@ const lessonSchedule = [
     { name: "Period 1",     start: "09:00", end: "09:45" }, // Period Row 1
     { name: "Period 2",     start: "09:45", end: "10:30" }, // Period Row 2
     { name: "Period 3",     start: "10:30", end: "11:15" }, // Period Row 3
-    // Period 5b is a break, so we skip it in this schedule index
+    // break time here but not on timetable
     { name: "Period 4",     start: "11:35", end: "12:20" }, // Period Row 4
     { name: "Period 5a",    start: "12:20", end: "13:05" }, // Period Row 5
     // Mincha is a break time but treated as a period
@@ -172,7 +172,7 @@ function updateLessonHighlight() {
 const subjectBookMap = {
     "Chemistry": ["Chemistry Notebook"],
     "Mathematics": ["Maths Notebook"],
-    "English": ["English Notebook", "Jekyll + Hyde text"],
+    "English": ["English Notebook", "An Inspector Calls text"],
     "Modern Hebrew": ["Mh Book"],
     "Computing": [],
     "Biology": ["Laptop"],
@@ -182,9 +182,7 @@ const subjectBookMap = {
     "Geography": ["Laptop"], 
     "Biblical Hebrew": ["Josephs Rise To Power text"],
     "Chumash": [],
-    "P.S.H.E.": [],
     "Mincha": [],
-    "Registration": [], 
 };
 
 /**
